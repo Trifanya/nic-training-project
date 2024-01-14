@@ -1,9 +1,16 @@
 package dev.trifanya;
 
+import dev.trifanya.model.TaskDTO;
+import dev.trifanya.model.TaskPriority;
+import dev.trifanya.model.TaskStatus;
+import dev.trifanya.server_connection.TaskClient;
+import lombok.RequiredArgsConstructor;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
+@RequiredArgsConstructor
 public class Main {
     public static final Font font = new Font(Font.SANS_SERIF, Font.BOLD, 16);
     public static int frameWidth = 1400;
@@ -15,6 +22,29 @@ public class Main {
 
     public static void main(String[] args) {
 
+        TaskClient taskClient = new TaskClient();
+        /*List<Task> tasks = taskDAO.getAllTasks();
+        for (Task task : tasks) {
+            System.out.println(task.getId() + " " + task.getTitle());
+        }*/
+        //taskDAO.deleteTask(3);
+        /*TaskDTO newTask = new TaskDTO()
+                .setTitle("Новая задача Х")
+                .setDescription("Какое-то описание")
+                .setAuthorId(2).setPerformerId(3)
+                .setStatus(TaskStatus.NOT_STARTED)
+                .setPriority(TaskPriority.MEDIUM);
+        taskClient.createNewTask(newTask);*/
+        TaskDTO updatedTask = new TaskDTO()
+                .setId(11)
+                .setTitle("Обновленная задача Х")
+                .setDescription("Какое-то описание")
+                .setAuthorId(1).setPerformerId(2)
+                .setStatus(TaskStatus.NOT_STARTED)
+                .setPriority(TaskPriority.MEDIUM);
+        taskClient.updateTaskInfo(updatedTask);
+
+
         JFrame frame = new JFrame("Task Management Service");
         frame.setLocation(350, 100);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -25,7 +55,6 @@ public class Main {
 
         /**
          * ПАНЕЛЬ С МЕНЮ
-         *
          */
         MenuPanel menuPanel = new MenuPanel();
         frame.add(menuPanel, BorderLayout.WEST);
