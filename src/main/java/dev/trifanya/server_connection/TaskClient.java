@@ -1,7 +1,6 @@
 package dev.trifanya.server_connection;
 
-import dev.trifanya.model.TaskDTO;
-import javafx.concurrent.Task;
+import dev.trifanya.dto.TaskDTO;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package dev.trifanya.model;
+package dev.trifanya.dto;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -11,8 +11,8 @@ public class TaskDTO {
     private int id;
     private String title;
     private String description;
-    private int authorId;
-    private int performerId;
+    private String authorEmail;
+    private String performerEmail;
     private TaskStatus status;
     private TaskPriority priority;
     private LocalDateTime createdAt;

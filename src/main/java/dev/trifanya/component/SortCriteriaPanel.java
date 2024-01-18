@@ -1,4 +1,4 @@
-package dev.trifanya;
+package dev.trifanya.component;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;

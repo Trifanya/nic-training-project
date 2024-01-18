@@ -1,4 +1,4 @@
-package dev.trifanya.model;
+package dev.trifanya.dto;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
