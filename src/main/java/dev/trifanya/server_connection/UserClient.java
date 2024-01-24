@@ -7,10 +7,19 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
-@Component
 public class UserClient {
     private static final String HOST = "http://localhost:8080";
     private static final WebClient webClient = WebClient.create(HOST);
+
+    public UserDTO getUserByEmail(String email) {
+        return webClient.get()
+                .uri("/users/" + email + "/profile")
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(UserDTO.class)
+                .blockOptional()
+                .get();
+    }
 
     public List<UserDTO> getAllUsers() {
         return webClient.get()

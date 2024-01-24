@@ -3,6 +3,7 @@ package dev.trifanya.dto;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
@@ -13,8 +14,7 @@ public class TaskDTO {
     private String description;
     private String authorEmail;
     private String performerEmail;
+    private LocalDateTime deadline;
     private TaskStatus status;
     private TaskPriority priority;
-    private LocalDateTime createdAt;
-    private LocalDateTime deadline;
 }
