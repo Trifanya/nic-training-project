@@ -3,6 +3,7 @@ package dev.trifanya.swing.content.task_list;
 import dev.trifanya.model.Task;
 import dev.trifanya.service.TaskFiltersBuilder;
 import dev.trifanya.service.TaskService;
+import javafx.util.Pair;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
@@ -46,18 +47,19 @@ public class TaskTableModel extends AbstractTableModel {
         }
     }
 
-    public void fillTable(Map<String, String> filters) {
+
+
+    public void fillTable(Map<String, String> filters, String sortByColumn, String sortDir) {
         tableData.clear();
 
-        List<Task> tasks;
-        if (filters == null || filters.isEmpty()) tasks = taskService.getAllTasks();
-        else tasks = taskService.getFilteredTasks(filters);
+        List<Task> tasks = taskService.getFilteredTasks(filters, sortByColumn, sortDir);
 
         for (Task task : tasks) {
             String[] row = new String[columnCount];
             row[0] = Integer.toString(task.getId());
             row[1] = task.getTitle();
             row[2] = task.getPriority().toString();
+            row[3] = task.getDeadline() == null ? "" : task.getDeadline().toString();
             row[4] = task.getPerformer().getEmail();
 
             tableData.add(row);

@@ -30,13 +30,13 @@ public class SortAndFiltersPanel extends JPanel {
         add(sortCriteriaPanel, new GridBagConstraints(
                 0, 0, 1, 1, 1, 0,
                 GridBagConstraints.PAGE_START, GridBagConstraints.BOTH,
-                new Insets(15, 20, 15, 20), 0, 0));
+                new Insets(0, 20,15, 20), 0, 0));
 
         filtersPanel = new FiltersPanel();
         filtersPanel.init(this);
         add(filtersPanel, new GridBagConstraints(
-                0, 1, 1, 2, 1, 0,
+                0, 1, 1, 1, 1, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(0, 20, 15, 20), 0, 0));
+                new Insets(0, 20, 0, 20), 0, 0));
     }
 }

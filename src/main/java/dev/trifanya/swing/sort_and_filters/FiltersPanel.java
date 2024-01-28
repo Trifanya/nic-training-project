@@ -116,19 +116,13 @@ public class FiltersPanel extends JPanel {
                 if (completedStatusBox.isSelected()) statusValues.append("," + TaskStatus.COMPLETED);
                 filters.put("statusValues", statusValues.toString());
 
-                for (Map.Entry<String, String> filter : filters.entrySet()) {
-                    System.out.println(filter.getKey() + " " + filter.getValue());
-                }
-
-                TaskFiltersBuilder.buildFilterCriterion(filters);
-
                 parent.getContentLayeredPane().getTaskListPanel().setTaskFilters(filters);
             }
         });
         add(applyFiltersButton, new GridBagConstraints(
                 0, 7, 1, 1, 0, 0,
                 GridBagConstraints.PAGE_START, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 0), 0, 0
+                new Insets(0, 0, 10, 0), 0, 0
         ));
     }
 }

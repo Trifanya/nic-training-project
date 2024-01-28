@@ -3,6 +3,7 @@ package dev.trifanya.swing.content.task_list;
 import dev.trifanya.service.TaskService;
 import dev.trifanya.swing.MainFrame;
 import dev.trifanya.swing.content.ContentLayeredPane;
+import javafx.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,6 +33,8 @@ public class TaskListPanel extends JPanel implements Runnable {
     private JButton deleteTaskButton;
 
     private Map<String, String> taskFilters;
+    private String sortByColumn = "id";
+    private String sortDir = "ASC";
 
     public TaskListPanel() {
         setLayout(new GridBagLayout());
@@ -165,12 +168,9 @@ public class TaskListPanel extends JPanel implements Runnable {
     public void run() {
         while (true) {
             try {
-                /*for (Map.Entry<String, String> filter : taskFilters.entrySet()) {
-                    System.out.println(filter.getKey() + " " + filter.getValue());
-                }*/
-                taskTableModel.fillTable(taskFilters);
+                taskTableModel.fillTable(taskFilters, sortByColumn, sortDir);
                 this.repaint();
-                Thread.sleep(1000);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

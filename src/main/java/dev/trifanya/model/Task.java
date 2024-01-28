@@ -3,12 +3,13 @@ package dev.trifanya.model;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Data
 @Accessors(chain = true)
-public class Task {
+public class Task implements Serializable {
     private int id;
     private String title;
     private String description;

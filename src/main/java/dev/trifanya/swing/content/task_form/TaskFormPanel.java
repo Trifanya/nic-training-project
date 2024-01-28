@@ -209,6 +209,7 @@ public class TaskFormPanel extends JPanel {
                 Task taskToSave = new Task()
                         .setTitle(titleField.getText())
                         .setDescription(descriptionArea.getText())
+                        .setAuthor(userService.getUserById(1))
                         .setPerformer(userService.getUserByEmail(performerEmail))
                         .setStatus(TaskStatus.NOT_STARTED)
                         .setPriority(TaskPriority.getTaskPriority(priorityBox.getSelectedItem().toString()))
