@@ -3,6 +3,7 @@ package dev.trifanya.service;
 import dev.trifanya.exception.NotFoundException;
 import dev.trifanya.model.Task;
 import dev.trifanya.mybatis.mapper.TaskMapper;
+import dev.trifanya.activemq.criteria_builder.TaskFiltersBuilder;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -30,7 +31,6 @@ public class TaskService {
     }
 
     public Task getTaskById(int taskId) {
-        System.out.println("Inside getTaskById()");
         try (SqlSession session = sessionFactory.openSession(true)) {
             taskMapper = session.getMapper(TaskMapper.class);
             return taskMapper.findTaskById(taskId)
@@ -41,22 +41,12 @@ public class TaskService {
         }
     }
 
-    public List<Task> getAllTasks() {
-        System.out.println("Inside getAllTasks()");
+    public List<Task> getTasks(Map<String, String> filters, String sortBy, String sortDir) {
+        if (sortBy == null) sortBy = "id";
+        if (sortDir == null) sortDir = "ASC";
         try (SqlSession session = sessionFactory.openSession(true)) {
             taskMapper = session.getMapper(TaskMapper.class);
-            return taskMapper.findAllTasks();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
-
-    public List<Task> getFilteredTasks(Map<String, String> filters, String sortByColumn, String sortDir) {
-        System.out.println("Inside getFilteredTasks()");
-        try (SqlSession session = sessionFactory.openSession(true)) {
-            taskMapper = session.getMapper(TaskMapper.class);
-            return taskMapper.findTasksBySelectStatement(TaskFiltersBuilder.generateSelectStatement(filters, sortByColumn, sortDir));
+            return taskMapper.findTasksBySelectStatement(TaskFiltersBuilder.generateSelectStatement(filters, sortBy, sortDir));
         } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>();
@@ -64,7 +54,6 @@ public class TaskService {
     }
 
     public void createNewTask(Task taskToSave) {
-        System.out.println("Inside createNewTask()");
         try (SqlSession session = sessionFactory.openSession(true)) {
             taskMapper = session.getMapper(TaskMapper.class);
             taskMapper.saveTask(taskToSave.setCreatedAt(LocalDateTime.now()));
@@ -74,7 +63,6 @@ public class TaskService {
     }
 
     public void updateTaskInfo(Task updatedTask) {
-        System.out.println("Inside updateTaskInfo()");
         try (SqlSession session = sessionFactory.openSession(true)) {
             taskMapper = session.getMapper(TaskMapper.class);
             Task taskToUpdate = taskMapper.findTaskById(updatedTask.getId()).get();
@@ -86,7 +74,6 @@ public class TaskService {
     }
 
     public void deleteTaskById(int taskToDeleteId) {
-        System.out.println("Inside deleteTaskById()");
         try (SqlSession session = sessionFactory.openSession(true)) {
             taskMapper = session.getMapper(TaskMapper.class);
             taskMapper.deleteTaskById(taskToDeleteId);

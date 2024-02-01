@@ -17,9 +17,9 @@ public class MenuPanel extends JPanel {
 
     private JButton taskListButton;
     private JButton newTaskButton;
-    private JButton newMemberButton;
-    private JButton workspaceSettingsButton;
-    private JButton exitButton;
+    private JButton userListButton;
+    private JButton newUserButton;
+
     public MenuPanel() {
         setLayout(new GridBagLayout());
         setPreferredSize(new Dimension(250, 0));
@@ -29,13 +29,13 @@ public class MenuPanel extends JPanel {
     public void init(ContentLayeredPane contentLayeredPane) {
         this.contentLayeredPane = contentLayeredPane;
 
-        mainMenuButtonInit();
+        taskListButtonInit();
         newTaskButtonInit();
-        newMemberButtonInit();
-        workspaceSettingsButtonInit();
+        userListButtonInit();
+        newUserButtonInit();
     }
 
-    private void mainMenuButtonInit() {
+    private void taskListButtonInit() {
         taskListButton = new JButton("Список задач");
         taskListButton.setPreferredSize(new Dimension(200, 40));
         MainFrame.setBasicInterface(taskListButton);
@@ -68,21 +68,36 @@ public class MenuPanel extends JPanel {
                 new Insets(0, 0, 15, 0), 0, 10));
     }
 
-    private void newMemberButtonInit() {
-        newMemberButton = new JButton("Добавить участника");
-        newMemberButton.setPreferredSize(new Dimension(200, 40));
-        MainFrame.setBasicInterface(newMemberButton);
-        add(newMemberButton, new GridBagConstraints(
+    private void userListButtonInit() {
+        userListButton = new JButton("Список участников");
+        userListButton.setPreferredSize(new Dimension(200, 40));
+        MainFrame.setBasicInterface(userListButton);
+        userListButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Кнопка нажата");
+                contentLayeredPane.putPanelOnTop("USER LIST");
+            }
+        });
+        add(userListButton, new GridBagConstraints(
                 0, 2, 1, 1, 0, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 15, 0), 0, 10));
     }
 
-    private void workspaceSettingsButtonInit() {
-        workspaceSettingsButton = new JButton("<html>Настройки рабочего<p style=\"text-align:center;\">пространства</html>");
-        workspaceSettingsButton.setPreferredSize(new Dimension(200, 70));
-        MainFrame.setBasicInterface(workspaceSettingsButton);
-        add(workspaceSettingsButton, new GridBagConstraints(
+    private void newUserButtonInit() {
+        newUserButton = new JButton("Добавить участника");
+        newUserButton.setPreferredSize(new Dimension(200, 40));
+        MainFrame.setBasicInterface(newUserButton);
+        newUserButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Кнопка нажата");
+                contentLayeredPane.getUserFormPanel().setCurrentUser(null);
+                contentLayeredPane.putPanelOnTop("NEW USER");
+            }
+        });
+        add(newUserButton, new GridBagConstraints(
                 0, 3, 1, 1, 0, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 15, 0), 0, 10));

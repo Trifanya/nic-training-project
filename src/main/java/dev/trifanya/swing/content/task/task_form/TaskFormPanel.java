@@ -1,4 +1,4 @@
-package dev.trifanya.swing.content.task_form;
+package dev.trifanya.swing.content.task.task_form;
 
 import dev.trifanya.service.TaskService;
 import dev.trifanya.service.UserService;
@@ -134,7 +134,7 @@ public class TaskFormPanel extends JPanel {
 
         performerBox = new JComboBox();
         MainFrame.setBasicInterface(performerBox);
-        for (User user : userService.getAllUsers()) {
+        for (User user : userService.getUsers("id", "ASC")) {
             performerBox.addItem(user.getEmail() + " (" + user.getName() + " " + user.getSurname() + ")");
         }
         taskFormPanel.add(performerBox, new GridBagConstraints(currentColumn--, currentRow++, 2, 1, 0, 0,

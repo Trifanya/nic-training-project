@@ -5,7 +5,6 @@
     <typeAliases>
         <typeAlias  type="dev.trifanya.mybatis.mapper.TaskMapper" alias="TaskMapper"/>
         <typeAlias type="dev.trifanya.mybatis.mapper.UserMapper" alias="UserMapper"/>
-        <typeAlias type="dev.trifanya.mybatis.mapper.CommentMapper" alias="CommentMapper"/>
     </typeAliases>
 
     <environments default="development">
@@ -24,7 +23,6 @@
     <mappers>
         <mapper class="dev.trifanya.mybatis.mapper.TaskMapper"/>
         <mapper class="dev.trifanya.mybatis.mapper.UserMapper"/>
-        <mapper class="dev.trifanya.mybatis.mapper.CommentMapper"/>
     </mappers>
 
 </configuration>

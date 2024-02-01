@@ -1,4 +1,4 @@
-package dev.trifanya.swing.content.task_page;
+package dev.trifanya.swing.content.task.task_page;
 
 import dev.trifanya.model.Task;
 import dev.trifanya.swing.MainFrame;

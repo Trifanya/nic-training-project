@@ -36,7 +36,7 @@ public interface TaskMapper {
     @ResultMap("TaskResult")
     List<Task> findTasksByPerformerId(long performerId);
 
-    @SelectProvider(type= SqlProviderAdapter.class, method="select")
+    @SelectProvider(type = SqlProviderAdapter.class, method = "select")
     @ResultMap("TaskResult")
     List<Task> findTasksBySelectStatement(SelectStatementProvider selectStatement);
 

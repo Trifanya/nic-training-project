@@ -1,6 +1,6 @@
 package dev.trifanya;
 
-import dev.trifanya.activemq.MainMessageConsumer;
+import dev.trifanya.activemq.consumer.RequestMessageConsumer;
 import dev.trifanya.swing.MainFrame;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
@@ -13,7 +13,6 @@ import static org.apache.activemq.ActiveMQConnection.DEFAULT_BROKER_URL;
 public class SwingCRUDApp {
     public static final String CLIENTID = "SwingCRUDApp";
     public static final String requestFromClientQueue = "Request Queue";
-    public static final String responseFromServerQueue = "Response Queue";
 
     public static ConnectionFactory connectionFactory;
     public static Connection connection;
@@ -26,7 +25,7 @@ public class SwingCRUDApp {
         connection.setClientID(CLIENTID);
         connection.start();
 
-        MainMessageConsumer mainMessageConsumer = new MainMessageConsumer();
+        RequestMessageConsumer requestMessageConsumer = new RequestMessageConsumer();
         mainFrame.init();
     }
 }

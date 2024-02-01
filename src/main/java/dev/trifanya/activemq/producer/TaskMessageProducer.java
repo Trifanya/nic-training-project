@@ -1,4 +1,4 @@
-package dev.trifanya.activemq;
+package dev.trifanya.activemq.producer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,45 +13,35 @@ import static javax.jms.Session.AUTO_ACKNOWLEDGE;
 
 public class TaskMessageProducer {
     private Session session;
-    private Destination destination;
     private MessageProducer producer;
     private ObjectMapper objectMapper;
 
     public TaskMessageProducer() throws JMSException {
         session = SwingCRUDApp.connection.createSession(false, AUTO_ACKNOWLEDGE);
-        destination = session.createQueue(SwingCRUDApp.responseFromServerQueue);
-        producer = session.createProducer(destination);
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
     }
 
+    public void sendTask(Destination responseDestination, Task taskToSend) throws JMSException, JsonProcessingException {
+        producer = session.createProducer(responseDestination);
 
-    public void sendTask(Task taskToSend) throws JMSException {
-        String messageToSend = null;
-        try {
-            messageToSend = objectMapper.writeValueAsString(taskToSend);
-        } catch(JsonProcessingException e) {
-            e.printStackTrace();
-        }
+        String messageToSend = objectMapper.writeValueAsString(taskToSend);
         TextMessage message = session.createTextMessage(messageToSend);
         message.setStringProperty("Response name", "Single task");
 
         producer.send(message);
-        System.out.println("Task sent");
     }
 
-    public void sendTaskList(List<Task> taskListToSend) throws JMSException{
-        String messageToSend = null;
-        try {
-            messageToSend = objectMapper.writeValueAsString(taskListToSend);
-        } catch(JsonProcessingException e) {
-            e.printStackTrace();
+    public void sendTaskList(Destination responseDestination, List<Task> taskListToSend) throws JMSException, JsonProcessingException {
+        for (Task task : taskListToSend) {
+            System.out.println("id: " + task.getId() + " title: " + task.getTitle());
         }
+        producer = session.createProducer(responseDestination);
+
+        String messageToSend = objectMapper.writeValueAsString(taskListToSend);
         TextMessage message = session.createTextMessage(messageToSend);
         message.setStringProperty("Response name", "Task list");
 
         producer.send(message);
-
-        System.out.println("List sent");
     }
 }

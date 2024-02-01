@@ -1,4 +1,4 @@
-package dev.trifanya.swing.content.task_list;
+package dev.trifanya.swing.content.task.task_list;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

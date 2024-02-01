@@ -2,7 +2,6 @@ package dev.trifanya.swing.sort_and_filters;
 
 import dev.trifanya.model.TaskPriority;
 import dev.trifanya.model.TaskStatus;
-import dev.trifanya.service.TaskFiltersBuilder;
 import dev.trifanya.swing.MainFrame;
 
 import javax.swing.*;

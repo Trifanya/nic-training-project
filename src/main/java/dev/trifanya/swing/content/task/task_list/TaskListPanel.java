@@ -1,9 +1,8 @@
-package dev.trifanya.swing.content.task_list;
+package dev.trifanya.swing.content.task.task_list;
 
 import dev.trifanya.service.TaskService;
 import dev.trifanya.swing.MainFrame;
 import dev.trifanya.swing.content.ContentLayeredPane;
-import javafx.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
 

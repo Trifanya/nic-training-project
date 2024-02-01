@@ -1,9 +1,7 @@
-package dev.trifanya.swing.content.task_list;
+package dev.trifanya.swing.content.task.task_list;
 
 import dev.trifanya.model.Task;
-import dev.trifanya.service.TaskFiltersBuilder;
 import dev.trifanya.service.TaskService;
-import javafx.util.Pair;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
@@ -52,7 +50,7 @@ public class TaskTableModel extends AbstractTableModel {
     public void fillTable(Map<String, String> filters, String sortByColumn, String sortDir) {
         tableData.clear();
 
-        List<Task> tasks = taskService.getFilteredTasks(filters, sortByColumn, sortDir);
+        List<Task> tasks = taskService.getTasks(filters, sortByColumn, sortDir);
 
         for (Task task : tasks) {
             String[] row = new String[columnCount];
@@ -65,6 +63,4 @@ public class TaskTableModel extends AbstractTableModel {
             tableData.add(row);
         }
     }
-
-
 }
