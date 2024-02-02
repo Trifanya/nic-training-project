@@ -1,4 +1,4 @@
-package dev.trifanya.activemq.criteria_builder;
+package dev.trifanya.mybatis.criteria_builder;
 
 import org.mybatis.dynamic.sql.*;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;

@@ -1,6 +1,6 @@
 package dev.trifanya.service;
 
-import dev.trifanya.activemq.criteria_builder.UserFiltersBuilder;
+import dev.trifanya.mybatis.criteria_builder.UserFiltersBuilder;
 import dev.trifanya.model.User;
 import dev.trifanya.mybatis.mapper.UserMapper;
 import dev.trifanya.exception.NotFoundException;

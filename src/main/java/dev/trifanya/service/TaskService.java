@@ -3,7 +3,7 @@ package dev.trifanya.service;
 import dev.trifanya.exception.NotFoundException;
 import dev.trifanya.model.Task;
 import dev.trifanya.mybatis.mapper.TaskMapper;
-import dev.trifanya.activemq.criteria_builder.TaskFiltersBuilder;
+import dev.trifanya.mybatis.criteria_builder.TaskFiltersBuilder;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;

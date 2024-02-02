@@ -1,4 +1,4 @@
-package dev.trifanya.activemq.criteria_builder;
+package dev.trifanya.mybatis.criteria_builder;
 
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
