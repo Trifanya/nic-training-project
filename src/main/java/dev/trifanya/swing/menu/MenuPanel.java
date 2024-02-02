@@ -13,22 +13,21 @@ import java.awt.event.ActionListener;
 @Getter
 @Setter
 public class MenuPanel extends JPanel {
-    private ContentLayeredPane contentLayeredPane;
+    private MainFrame mainFrame;
 
     private JButton taskListButton;
     private JButton newTaskButton;
     private JButton userListButton;
     private JButton newUserButton;
 
-    public MenuPanel() {
+    public MenuPanel(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
         setLayout(new GridBagLayout());
         setPreferredSize(new Dimension(250, 0));
         MainFrame.setBasicInterface(this);
     }
 
     public void init(ContentLayeredPane contentLayeredPane) {
-        this.contentLayeredPane = contentLayeredPane;
-
         taskListButtonInit();
         newTaskButtonInit();
         userListButtonInit();
@@ -42,7 +41,8 @@ public class MenuPanel extends JPanel {
         taskListButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                contentLayeredPane.putPanelOnTop("TASK LIST");
+                mainFrame.getSortAndFiltersPanel().setContentVisible(true);
+                mainFrame.getContentLayeredPane().putPanelOnTop("TASK LIST");
             }
         });
         add(taskListButton, new GridBagConstraints(
@@ -58,8 +58,9 @@ public class MenuPanel extends JPanel {
         newTaskButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                contentLayeredPane.getTaskFormPanel().setCurrentTask(null);
-                contentLayeredPane.putPanelOnTop("NEW TASK");
+                mainFrame.getSortAndFiltersPanel().setContentVisible(false);
+                mainFrame.getContentLayeredPane().getTaskFormPanel().setCurrentTask(null);
+                mainFrame.getContentLayeredPane().putPanelOnTop("NEW TASK");
             }
         });
         add(newTaskButton, new GridBagConstraints(
@@ -75,8 +76,8 @@ public class MenuPanel extends JPanel {
         userListButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Кнопка нажата");
-                contentLayeredPane.putPanelOnTop("USER LIST");
+                mainFrame.getSortAndFiltersPanel().setContentVisible(false);
+                mainFrame.getContentLayeredPane().putPanelOnTop("USER LIST");
             }
         });
         add(userListButton, new GridBagConstraints(
@@ -92,9 +93,9 @@ public class MenuPanel extends JPanel {
         newUserButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Кнопка нажата");
-                contentLayeredPane.getUserFormPanel().setCurrentUser(null);
-                contentLayeredPane.putPanelOnTop("NEW USER");
+                mainFrame.getSortAndFiltersPanel().setContentVisible(false);
+                mainFrame.getContentLayeredPane().getUserFormPanel().setCurrentUser(null);
+                mainFrame.getContentLayeredPane().putPanelOnTop("NEW USER");
             }
         });
         add(newUserButton, new GridBagConstraints(

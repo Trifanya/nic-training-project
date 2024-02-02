@@ -4,6 +4,7 @@ import dev.trifanya.model.User;
 import dev.trifanya.service.UserService;
 import dev.trifanya.swing.MainFrame;
 import dev.trifanya.swing.content.ContentLayeredPane;
+import dev.trifanya.swing.content.task.task_form.TaskFormPanel;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -25,6 +26,9 @@ public class UserFormPanel extends JPanel {
 
     private int currentRow = 0;
     private int currentColumn = 0;
+
+    private int ipadx = 20;
+    private int ipady = 20;
 
     private final int labelHorizontalAlignment = SwingConstants.LEFT;
 
@@ -91,12 +95,13 @@ public class UserFormPanel extends JPanel {
         add(userFormPanel, new GridBagConstraints(
                 0, 1, 1, 1, 1, 1,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(0, 25, 25, 25), 0, 0));
+                new Insets(0, leftMargin, bottomMargin, rightMargin), 0, 0));
     }
 
     private void initUserNameRow() {
         nameLabel = new JLabel("Имя:");
         MainFrame.setBasicInterface(nameLabel);
+        nameLabel.setBorder(null);
         nameLabel.setHorizontalAlignment(labelHorizontalAlignment);
         userFormPanel.add(nameLabel, new GridBagConstraints(currentColumn++, currentRow, 1, 1, 0, 0,
                 GridBagConstraints.EAST, GridBagConstraints.NONE,
@@ -106,90 +111,100 @@ public class UserFormPanel extends JPanel {
         nameField.setColumns(30);
         MainFrame.setBasicInterface(nameField);
         nameField.setCaretColor(MainFrame.secondColor);
-        nameField.setHorizontalAlignment(SwingConstants.LEFT);
+        nameField.setHorizontalAlignment(SwingConstants.CENTER);
         userFormPanel.add(nameField, new GridBagConstraints(currentColumn--, currentRow++, 2, 1, 0, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(topMargin, leftMargin, bottomMargin, rightMargin), 10, 10));
+                GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
+                new Insets(topMargin, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
     }
 
     private void initSurnameRow() {
         surnameLabel = new JLabel("Фамилия:");
         MainFrame.setBasicInterface(surnameLabel);
+        surnameLabel.setBorder(null);
         surnameLabel.setHorizontalAlignment(labelHorizontalAlignment);
         userFormPanel.add(surnameLabel, new GridBagConstraints(currentColumn++, currentRow, 1, 1, 0, 0,
                 GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
+                new Insets(0, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
 
         surnameField = new JTextField();
         surnameField.setColumns(30);
         MainFrame.setBasicInterface(surnameField);
-        userFormPanel.add(surnameField, new GridBagConstraints(currentColumn--, currentRow++, 2, 1, 0, 0,
-                GridBagConstraints.WEST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
+        surnameField.setHorizontalAlignment(SwingConstants.CENTER);
+        userFormPanel.add(surnameField, new GridBagConstraints(currentColumn--, currentRow++, 2, 1, 1, 0,
+                GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
+                new Insets(0, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
     }
 
     private void initPositionRow() {
         positionLabel = new JLabel("Должность:");
         MainFrame.setBasicInterface(positionLabel);
+        positionLabel.setBorder(null);
         positionLabel.setHorizontalAlignment(labelHorizontalAlignment);
         userFormPanel.add(positionLabel, new GridBagConstraints(currentColumn++, currentRow, 1, 1, 0, 0,
                 GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
+                new Insets(0, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
 
         positionField = new JTextField();
         positionField.setColumns(30);
         MainFrame.setBasicInterface(positionField);
-        userFormPanel.add(positionField, new GridBagConstraints(currentColumn--, currentRow++, 1, 1, 0, 0,
-                GridBagConstraints.WEST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
+        positionField.setHorizontalAlignment(SwingConstants.CENTER);
+        userFormPanel.add(positionField, new GridBagConstraints(currentColumn--, currentRow++, 2, 1, 1, 0,
+                GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
+                new Insets(0, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
     }
 
     private void initEmailRow() {
-        emailLabel = new JLabel("Email");
+        emailLabel = new JLabel("Email:");
         MainFrame.setBasicInterface(emailLabel);
+        emailLabel.setBorder(null);
         emailLabel.setHorizontalAlignment(labelHorizontalAlignment);
         userFormPanel.add(emailLabel, new GridBagConstraints(currentColumn++, currentRow, 1, 1, 0, 0,
                 GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
+                new Insets(0, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
 
         emailField = new JTextField();
         emailField.setColumns(30);
         MainFrame.setBasicInterface(emailField);
-        userFormPanel.add(emailField, new GridBagConstraints(currentColumn--, currentRow++, 2, 1, 0, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
+        emailField.setHorizontalAlignment(SwingConstants.CENTER);
+        userFormPanel.add(emailField, new GridBagConstraints(currentColumn--, currentRow++, 2, 1, 1, 0,
+                GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
+                new Insets(0, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
     }
 
     private void initPasswordRow() {
-        passwordLabel = new JLabel("Пароль");
+        passwordLabel = new JLabel("Пароль:");
         MainFrame.setBasicInterface(passwordLabel);
+        passwordLabel.setBorder(null);
         passwordLabel.setHorizontalAlignment(labelHorizontalAlignment);
         userFormPanel.add(passwordLabel, new GridBagConstraints(currentColumn++, currentRow, 1, 1, 0, 0,
                 GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
+                new Insets(0, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
 
         passwordField = new JPasswordField();
         passwordField.setColumns(30);
         MainFrame.setBasicInterface(passwordField);
-        userFormPanel.add(passwordField, new GridBagConstraints(currentColumn--, currentRow++, 2, 1, 0, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
+        passwordField.setHorizontalAlignment(SwingConstants.CENTER);
+        userFormPanel.add(passwordField, new GridBagConstraints(currentColumn--, currentRow++, 2, 1, 1, 0,
+                GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
+                new Insets(0, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
     }
 
     private void initPasswordConfirmationRow() {
-        passwordConfirmationLabel = new JLabel("Подтверждение пароля:");
+        passwordConfirmationLabel = new JLabel("<html><p style=»text-align: right;»>Подтверждение<br>пароля:</p></html>");
         MainFrame.setBasicInterface(passwordConfirmationLabel);
+        passwordConfirmationLabel.setBorder(null);
         passwordConfirmationLabel.setHorizontalAlignment(labelHorizontalAlignment);
         userFormPanel.add(passwordConfirmationLabel, new GridBagConstraints(currentColumn++, currentRow, 1, 1, 0, 0,
                 GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
+                new Insets(0, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
 
         passwordConfirmationField = new JPasswordField();
         passwordConfirmationField.setColumns(30);
         MainFrame.setBasicInterface(passwordConfirmationField);
-        userFormPanel.add(passwordConfirmationField, new GridBagConstraints(currentColumn--, currentRow++, 2, 1, 0, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
+        passwordConfirmationField.setHorizontalAlignment(SwingConstants.CENTER);
+        userFormPanel.add(passwordConfirmationField, new GridBagConstraints(currentColumn--, currentRow++, 2, 1, 1, 0,
+                GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
+                new Insets(0, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
     }
 
     public void initSubmitButton() {
@@ -213,10 +228,14 @@ public class UserFormPanel extends JPanel {
 
                 if (currentUser == null) {
                     userService.createNewUser(userToSave);
+                    JOptionPane.showMessageDialog(UserFormPanel.this, "Пользователь успешно сохранен", "Сообщение", JOptionPane.INFORMATION_MESSAGE);
+                    clearUserForm();
                 } else {
                     userToSave.setId(currentUser.getId());
                     userService.updateUserInfo(userToSave);
+                    JOptionPane.showMessageDialog(UserFormPanel.this, "Информация о пользователе успешно обновлена", "Сообщение", JOptionPane.INFORMATION_MESSAGE);
                 }
+
             }
         });
         add(submitButton, new GridBagConstraints(
@@ -239,7 +258,7 @@ public class UserFormPanel extends JPanel {
     /**
      * Очистка формы от данных
      */
-    public void clearTaskForm() {
+    public void clearUserForm() {
         nameField.setText("");
         surnameField.setText("");
         positionField.setText("");
@@ -259,7 +278,7 @@ public class UserFormPanel extends JPanel {
     public void setCurrentUser(User user) {
         this.currentUser = user;
         if (user == null) {
-            clearTaskForm();
+            clearUserForm();
             rewriteToCreate();
             return;
         }

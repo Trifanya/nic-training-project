@@ -8,6 +8,7 @@ import dev.trifanya.swing.content.task.task_page.TaskDetailsPanel;
 import dev.trifanya.swing.content.user.user_form.UserFormPanel;
 import dev.trifanya.swing.content.user.user_list.UserListPanel;
 import dev.trifanya.swing.content.user.user_page.UserDetailsPanel;
+import dev.trifanya.swing.menu.MenuPanel;
 import lombok.Getter;
 
 import javax.swing.*;
@@ -16,6 +17,8 @@ import java.awt.*;
 
 @Getter
 public class ContentLayeredPane extends JLayeredPane {
+    private MainFrame mainFrame;
+
     private TaskListPanel taskListPanel;
     private TaskFormPanel taskFormPanel;
     private TaskDetailsPanel taskDetailsPanel;
@@ -24,7 +27,8 @@ public class ContentLayeredPane extends JLayeredPane {
     private UserFormPanel userFormPanel;
     private UserDetailsPanel userDetailsPanel;
 
-    public ContentLayeredPane() {
+    public ContentLayeredPane(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
         setLayout(new GridBagLayout());
         setBackground(MainFrame.firstColor);
         setBorder(new LineBorder(MainFrame.secondColor, 3, true));

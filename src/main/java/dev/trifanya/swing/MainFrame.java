@@ -3,12 +3,16 @@ package dev.trifanya.swing;
 import dev.trifanya.swing.content.ContentLayeredPane;
 import dev.trifanya.swing.menu.MenuPanel;
 import dev.trifanya.swing.sort_and_filters.SortAndFiltersPanel;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
+@Getter
+@Setter
 public class MainFrame extends JFrame {
     public static int frameWidth = 1400;
     public static int frameHeight = 800;
@@ -33,9 +37,9 @@ public class MainFrame extends JFrame {
     }
 
     public void init() {
-        menuPanel = new MenuPanel();
-        contentLayeredPane = new ContentLayeredPane();
-        sortAndFiltersPanel = new SortAndFiltersPanel();
+        menuPanel = new MenuPanel(this);
+        contentLayeredPane = new ContentLayeredPane(this);
+        sortAndFiltersPanel = new SortAndFiltersPanel(this);
 
         menuPanel.init(contentLayeredPane);
         add(menuPanel, BorderLayout.WEST);

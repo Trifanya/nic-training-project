@@ -3,6 +3,8 @@ package dev.trifanya.swing.content.task.task_list;
 import dev.trifanya.service.TaskService;
 import dev.trifanya.swing.MainFrame;
 import dev.trifanya.swing.content.ContentLayeredPane;
+import dev.trifanya.swing.content.task.task_form.TaskFormPanel;
+import dev.trifanya.swing.content.user.user_list.UserListPanel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -108,7 +110,12 @@ public class TaskListPanel extends JPanel implements Runnable {
         taskDetailsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int taskId = Integer.valueOf(taskTableModel.getValueAt(taskTable.getSelectedRow(), 0));
+                int selectedRow = taskTable.getSelectedRow();
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(TaskListPanel.this, "Вы не выбрали строку", "Предупреждение", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                int taskId = Integer.valueOf(taskTableModel.getValueAt(selectedRow, 0));
                 contentLayeredPane.getTaskDetailsPanel().setCurrentTask(taskService.getTaskById(taskId));
                 contentLayeredPane.getTaskDetailsPanel().fill();
                 contentLayeredPane.putPanelOnTop("TASK DETAILS");
@@ -140,8 +147,13 @@ public class TaskListPanel extends JPanel implements Runnable {
         updateTaskButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                int selectedRow = taskTable.getSelectedRow();
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(TaskListPanel.this, "Вы не выбрали строку", "Предупреждение", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
                 contentLayeredPane.putPanelOnTop("NEW TASK");
-                int taskId = Integer.valueOf(taskTableModel.getValueAt(taskTable.getSelectedRow(), 0));
+                int taskId = Integer.valueOf(taskTableModel.getValueAt(selectedRow, 0));
                 contentLayeredPane.getTaskFormPanel().setCurrentTask(taskService.getTaskById(taskId));
             }
         });
@@ -156,9 +168,19 @@ public class TaskListPanel extends JPanel implements Runnable {
         deleteTaskButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int taskId = Integer.valueOf(taskTableModel.getValueAt(taskTable.getSelectedRow(), 0));
+                int selectedRow = taskTable.getSelectedRow();
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(TaskListPanel.this, "Вы не выбрали строку", "Предупреждение", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                int taskId = Integer.valueOf(taskTableModel.getValueAt(selectedRow, 0));
                 System.out.println(taskId);
-                taskService.deleteTaskById(taskId);
+                try {
+                    taskService.deleteTaskById(taskId);
+                    JOptionPane.showMessageDialog(TaskListPanel.this, "Задача успешно удалена", "Сообщение", JOptionPane.INFORMATION_MESSAGE);
+                } catch (Exception exception) {
+                    JOptionPane.showMessageDialog(TaskListPanel.this, "Что-то пошло не так. Невозможно удалить задачу", "Ошибка", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
     }
