@@ -1,8 +1,8 @@
 package dev.trifanya.swing;
 
-import dev.trifanya.swing.content.ContentLayeredPane;
-import dev.trifanya.swing.menu.MenuPanel;
-import dev.trifanya.swing.sort_and_filters.SortAndFiltersPanel;
+import dev.trifanya.swing.content_panel.ContentLayeredPane;
+import dev.trifanya.swing.menu_panel.MenuPanel;
+import dev.trifanya.swing.sort_and_filters_panel.SortAndFiltersPanel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -41,7 +41,7 @@ public class MainFrame extends JFrame {
         contentLayeredPane = new ContentLayeredPane(this);
         sortAndFiltersPanel = new SortAndFiltersPanel(this);
 
-        menuPanel.init(contentLayeredPane);
+        menuPanel.init();
         add(menuPanel, BorderLayout.WEST);
 
         contentLayeredPane.init();
@@ -49,6 +49,7 @@ public class MainFrame extends JFrame {
 
         sortAndFiltersPanel.init(contentLayeredPane);
         add(sortAndFiltersPanel, BorderLayout.EAST);
+        sortAndFiltersPanel.setContentVisible(false);
 
         setVisible(true);
     }
