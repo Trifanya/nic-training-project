@@ -6,6 +6,7 @@ import dev.trifanya.service.UserService;
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class UserTableModel extends AbstractTableModel {
     private int columnCount = 5;
@@ -44,10 +45,10 @@ public class UserTableModel extends AbstractTableModel {
         }
     }
 
-    public void fillTable(String sortByColumn, String sortDir) {
+    public void fillTable(Map<String, String> filters, String sortByColumn, String sortDir) {
         tableData.clear();
 
-        List<User> users = userService.getUsers(sortByColumn, sortDir);
+        List<User> users = userService.getUsers(filters, sortByColumn, sortDir);
 
         for (User user : users) {
             String[] row = new String[columnCount];

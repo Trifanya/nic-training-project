@@ -140,7 +140,7 @@ public class TaskFormPanel extends JPanel {
         performerBox = new JComboBox();
         MainFrame.setBasicInterface(performerBox);
         ((JLabel) performerBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
-        for (User user : userService.getUsers("id", "ASC")) {
+        for (User user : userService.getUsers(null, "id", "ASC")) {
             performerBox.addItem(user.getEmail() + " (" + user.getName() + " " + user.getSurname() + ")");
         }
         taskFormPanel.add(performerBox, new GridBagConstraints(currentColumn--, currentRow++, 1, 1, 0, 0,

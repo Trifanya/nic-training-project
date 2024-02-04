@@ -16,16 +16,13 @@ public class TaskFiltersBuilder {
 
     public static SelectStatementProvider generateSelectStatement(Map<String, String> filters, String sortByColumn, String sortDir) {
         SelectStatementProvider selectStatement;
-        System.out.println(filters);
-        if (filters.isEmpty() || filters == null) {
-            System.out.println("Сортировка без фильтров");
+        if (filters == null || filters.isEmpty()) {
             selectStatement = select(sqlTable.allColumns())
                     .from(SqlTable.of("task"))
                     .orderBy(buildSortCriterion(sortByColumn, sortDir))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
         } else {
-            System.out.println("И сортировка, и фильтры");
             selectStatement = select(sqlTable.allColumns())
                     .from(sqlTable)
                     .where(buildFilterCriterion(filters))

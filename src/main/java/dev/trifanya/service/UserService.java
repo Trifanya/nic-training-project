@@ -13,6 +13,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
+import java.util.Map;
 
 public class UserService {
     private final String NOT_FOUND_BY_ID_MSG = "Пользователь с указанным ID не найден.";
@@ -51,13 +52,13 @@ public class UserService {
         }
     }
 
-    public List<User> getUsers(String sortBy, String sortDir) {
+    public List<User> getUsers(Map<String, String> filters, String sortBy, String sortDir) {
         if (sortBy == null) sortBy = "id";
         if (sortDir == null) sortDir = "ASC";
         System.out.println("sortBy: " + sortBy + " sortDir: " + sortDir);
         try (SqlSession session = sessionFactory.openSession(true)) {
             userMapper = session.getMapper(UserMapper.class);
-            return userMapper.findUsersBySelectStatement(UserFiltersBuilder.generateSelectStatement(sortBy, sortDir));
+            return userMapper.findUsersBySelectStatement(UserFiltersBuilder.generateSelectStatement(filters, sortBy, sortDir));
         } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>();

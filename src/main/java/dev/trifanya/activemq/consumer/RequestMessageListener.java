@@ -56,7 +56,7 @@ public class RequestMessageListener implements MessageListener {
                     String userSortDir = userRequestParams.remove("sortDir");
                     userMessageProducer.sendUserList(
                             responseDestination,
-                            userService.getUsers(userSortBy, userSortDir));
+                            userService.getUsers(userRequestParams, userSortBy, userSortDir));
                     break;
             }
         } catch (Exception e) {

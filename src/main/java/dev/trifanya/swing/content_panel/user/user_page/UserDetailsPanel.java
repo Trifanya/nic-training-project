@@ -64,7 +64,6 @@ public class UserDetailsPanel extends JPanel {
         initEmailRow();
     }
 
-
     private void initPageTitleLabel() {
         pageTitleLabel = new JLabel("ИНФОРМАЦИЯ О ПОЛЬЗОВАТЕЛЕ");
         MainFrame.setBasicInterface(pageTitleLabel);

@@ -34,6 +34,10 @@ public class UserMessageProducer {
     }
 
     public void sendUserList(Destination responseDestination, List<User> userListToSend) throws JMSException {
+        System.out.println("Found:");
+        for (User user : userListToSend) {
+            System.out.println(user.getName() + " " + user.getSurname());
+        }
         producer = session.createProducer(responseDestination);
         String messageToSend = null;
         try {

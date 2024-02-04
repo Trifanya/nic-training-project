@@ -94,7 +94,7 @@ public class UserListPanel extends JPanel implements Runnable {
     public void run() {
         while (true) {
             try {
-                userTableModel.fillTable(sortByColumn, sortDir);
+                userTableModel.fillTable(null, sortByColumn, sortDir);
                 this.repaint();
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
