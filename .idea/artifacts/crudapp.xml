@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="crudapp">
+    <output-path>$PROJECT_DIR$/out/artifacts/crudapp</output-path>
+    <root id="root" />
+  </artifact>
+</component>

@@ -3,8 +3,8 @@
 <configuration>
 
     <typeAliases>
-        <typeAlias  type="dev.trifanya.mybatis.mapper.TaskMapper" alias="TaskMapper"/>
-        <typeAlias type="dev.trifanya.mybatis.mapper.UserMapper" alias="UserMapper"/>
+        <typeAlias type="dev.trifanya.swing_crudapp.mybatis.mapper.TaskMapper" alias="TaskMapper"/>
+        <typeAlias type="dev.trifanya.swing_crudapp.mybatis.mapper.UserMapper" alias="UserMapper"/>
     </typeAliases>
 
     <environments default="development">
@@ -21,8 +21,8 @@
     </environments>
 
     <mappers>
-        <mapper class="dev.trifanya.mybatis.mapper.TaskMapper"/>
-        <mapper class="dev.trifanya.mybatis.mapper.UserMapper"/>
+        <mapper class="dev.trifanya.swing_crudapp.mybatis.mapper.TaskMapper"/>
+        <mapper class="dev.trifanya.swing_crudapp.mybatis.mapper.UserMapper"/>
     </mappers>
 
 </configuration>
