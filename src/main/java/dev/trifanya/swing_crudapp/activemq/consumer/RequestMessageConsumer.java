@@ -14,7 +14,7 @@ public class RequestMessageConsumer {
     public RequestMessageConsumer() throws JMSException {
         session = SwingCRUDApp.connection.createSession(false, AUTO_ACKNOWLEDGE);
 
-        destination = session.createQueue(SwingCRUDApp.requestFromClientQueue);
+        destination = session.createQueue(SwingCRUDApp.REQUEST_FROM_CLIENT_QUEUE);
         consumer = session.createConsumer(destination);
         consumer.setMessageListener(new RequestMessageListener());
     }

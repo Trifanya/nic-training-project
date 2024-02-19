@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TaskMapper {
-    String FIND_USER_BY_ID_METHOD_NAME = "dev.trifanya.swing_crudapp.validator.mybatis.mapper.UserMapper.findUserById";
+    String FIND_USER_BY_ID_METHOD_NAME = "dev.trifanya.swing_crudapp.mybatis.mapper.UserMapper.findUserById";
 
     @Select("SELECT * FROM task")
     @Results(id="TaskResult", value = {

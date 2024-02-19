@@ -9,6 +9,7 @@ MAINCLASS=dev.trifanya.swing_crudapp.SwingCRUDApp
 
 cd $APPDIR
 
+mvn liquibase:update
 exec $JAVA \
   -server \
   -Djava.library.path=$LIBSPATH \

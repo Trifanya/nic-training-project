@@ -35,7 +35,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.30</version>
-            <scope>provided</scope>
         </dependency>
 
         <!--https://mvnrepository.com/artifact/com.github.lgooddatepicker/LGoodDatePicker-->
@@ -45,10 +44,11 @@
             <version>11.2.1</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-broker -->
         <dependency>
             <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-core</artifactId>
-            <version>5.7.0</version>
+            <artifactId>activemq-broker</artifactId>
+            <version>5.15.16</version>
         </dependency>
 
         <dependency>
@@ -57,32 +57,38 @@
             <version>2.16.1</version>
         </dependency>
 
-        <!--<dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>2.16.1</version>
-        </dependency>-->
-
     </dependencies>
 
     <packaging>jar</packaging>
     <build>
         <finalName>nictp_crudapp</finalName>
         <plugins>
+            <!-- Liquibase plugin -->
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>4.26.0</version>
+                <configuration>
+                    <propertyFile>liquibase/liquibase.properties</propertyFile>
+                    <changeLogFile>liquibase/changelog.yaml</changeLogFile>
+                </configuration>
+            </plugin>
+
+            <!-- Jar customization plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.3.0</version>
                 <configuration>
                     <archive>
                         <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib</classpathPrefix>
                             <mainClass>dev.trifanya.swing_crudapp.SwingCRUDApp</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
+
+            <!-- Deb-packaging plugin -->
             <plugin>
                 <artifactId>jdeb</artifactId>
                 <groupId>org.vafer</groupId>
@@ -125,6 +131,7 @@
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 
