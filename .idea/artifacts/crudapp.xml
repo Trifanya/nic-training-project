@@ -1,6 +1,8 @@
 <component name="ArtifactManager">
-  <artifact type="exploded-war" build-on-make="true" name="crudapp">
+  <artifact type="jar" build-on-make="true" name="crudapp">
     <output-path>$PROJECT_DIR$/out/artifacts/crudapp</output-path>
-    <root id="root" />
+    <root id="root">
+      <element id="directory" name="lib" />
+    </root>
   </artifact>
 </component>
