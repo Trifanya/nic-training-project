@@ -5,6 +5,8 @@ import lombok.Setter;
 import dev.trifanya.swing_app.swing.MainFrame;
 
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
@@ -87,5 +89,29 @@ public class SortCriteriaPanel extends JPanel {
                 new Insets(0, 5, 10, 5), 0, 0));
 
         sortDirGroup.setSelected(ascDirRadio.getModel(), true);
+    }
+
+    public Map<String, String> getSortParams() {
+        Map<String, String> sortParams = new HashMap<>();
+
+        String sortByColumn;
+        if (idRadio.isSelected()) {
+            sortByColumn = "id";
+        } else if (deadlineRadio.isSelected()) {
+            sortByColumn = "deadline";
+        } else {
+            sortByColumn = "created_at";
+        }
+        sortParams.put("sortBy", sortByColumn);
+
+        String sortDir = null;
+        if (ascDirRadio.isSelected()) {
+            sortDir = "ASC";
+        } else if (descDirRadio.isSelected()){
+            sortDir = "DESC";
+        }
+        sortParams.put("sortDir", sortDir);
+
+        return sortParams;
     }
 }

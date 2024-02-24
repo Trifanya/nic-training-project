@@ -1,5 +1,6 @@
 package dev.trifanya.swing_app.swing.content_panel;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import dev.trifanya.swing_app.swing.content_panel.task.task_form.TaskFormPanel;
 import dev.trifanya.swing_app.swing.content_panel.task.task_list.TaskListPanel;
 import dev.trifanya.swing_app.swing.content_panel.task.task_page.TaskDetailsPanel;
@@ -10,6 +11,7 @@ import dev.trifanya.swing_app.swing.MainFrame;
 import dev.trifanya.swing_app.swing.content_panel.user.user_list.UserListPanel;
 import lombok.Getter;
 
+import javax.jms.JMSException;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
@@ -40,7 +42,7 @@ public class ContentLayeredPane extends JLayeredPane {
         setMinimumSize(new Dimension(600, 400));
     }
 
-    public void init() {
+    public void init() throws JMSException, JsonProcessingException {
         /**
          * USER
          */

@@ -2,12 +2,15 @@ package dev.trifanya.swing_app.swing.content_panel.user.user_page;
 
 import dev.trifanya.server_app.model.User;
 import dev.trifanya.swing_app.swing.MainFrame;
+
 import lombok.Getter;
 import lombok.Setter;
 
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-import java.awt.*;
+import java.util.Map;
+import java.util.LinkedHashMap;
 
 @Getter
 @Setter
@@ -15,34 +18,39 @@ public class UserDetailsPanel extends JPanel {
     private User currentUser;
 
     private JLabel pageTitleLabel;
-
     private JPanel userInfoPanel;
 
     private JLabel idLabel;
-    private JLabel userId;
-
     private JLabel nameLabel;
-    private JLabel userName;
-
     private JLabel surnameLabel;
-    private JLabel userSurname;
-
     private JLabel positionLabel;
-    private JLabel userPosition;
-
     private JLabel emailLabel;
-    private JLabel userEmail;
 
-    private final int leftMargin = 25;
-    private final int rightMargin = 25;
-    private final int topMargin = 25;
-    private final int bottomMargin = 25;
+    private JLabel idValueLabel;
+    private JLabel nameValueLabel;
+    private JLabel surnameValueLabel;
+    private JLabel positionValueLabel;
+    private JLabel emailValueLabel;
 
-    private int currentRow = 0;
-    private int currentColumn = 0;
+    Map<JLabel, JLabel> panelLines = new LinkedHashMap<>();
 
-    private double labelWeightX = 0;
-    private double valueWeightX = 1;
+    private final int leftMargin = 15;
+    private final int rightMargin = 15;
+    private final int topMargin = 10;
+    private final int bottomMargin = 10;
+
+    private final int labelGridWidth = 1;
+    private final int labelGridHeight = 1;
+    private final int valueGridWidth = 1;
+    private final int valueGridHeight = 1;
+
+    private final double labelWeightX = 0;
+    private final double labelWeightY = 0;
+    private final double valueWeightX = 1;
+    private final double valueWeightY = 0;
+
+    private final int ipadx = 10;
+    private final int ipady = 15;
 
     private final int labelHorizontalAlignment = SwingConstants.LEFT;
     private final int valueHorizontalAlignment = SwingConstants.CENTER;
@@ -57,11 +65,42 @@ public class UserDetailsPanel extends JPanel {
     public void init() {
         initPageTitleLabel();
         initUserInfoPanel();
-        initIdRow();
-        initNameRow();
-        initSurnameRow();
-        initPositionRow();
-        initEmailRow();
+
+        idLabel = new JLabel("ID:");
+        nameLabel = new JLabel("Имя:");
+        surnameLabel = new JLabel("Фамилия:");
+        positionLabel = new JLabel("Должность:");
+        emailLabel = new JLabel("Email:");
+
+        idValueLabel = new JLabel("");
+        nameValueLabel = new JLabel("");
+        surnameValueLabel = new JLabel("");
+        positionValueLabel = new JLabel("");
+        emailValueLabel = new JLabel("");
+
+        panelLines.put(idLabel, idValueLabel);
+        panelLines.put(nameLabel, nameValueLabel);
+        panelLines.put(surnameLabel, surnameValueLabel);
+        panelLines.put(positionLabel, positionValueLabel);
+        panelLines.put(emailLabel, emailValueLabel);
+
+        int currentRow = 0;
+        int currentColumn = 0;
+        for (Map.Entry<JLabel, JLabel> panelLine : panelLines.entrySet()) {
+            MainFrame.setBasicInterface(panelLine.getKey());
+            panelLine.getKey().setBorder(null);
+            panelLine.getKey().setHorizontalAlignment(labelHorizontalAlignment);
+            userInfoPanel.add(panelLine.getKey(), new GridBagConstraints(
+                    currentColumn++, currentRow, labelGridWidth, labelGridHeight, labelWeightX, labelWeightY,
+                    GridBagConstraints.EAST, GridBagConstraints.NONE,
+                    new Insets(topMargin, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
+            MainFrame.setBasicInterface(panelLine.getValue());
+            panelLine.getValue().setHorizontalAlignment(valueHorizontalAlignment);
+            userInfoPanel.add(panelLine.getValue(), new GridBagConstraints(
+                    currentColumn--, currentRow++, valueGridWidth, valueGridHeight, valueWeightX, valueWeightY,
+                    GridBagConstraints.WEST, GridBagConstraints.BOTH,
+                    new Insets(topMargin, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
+        }
     }
 
     private void initPageTitleLabel() {
@@ -84,114 +123,19 @@ public class UserDetailsPanel extends JPanel {
                 new Insets(0, 25, 25, 25), 0, 0));
     }
 
-    private void initIdRow() {
-        idLabel = new JLabel("ID:");
-        MainFrame.setBasicInterface(idLabel);
-        idLabel.setBorder(null);
-        idLabel.setHorizontalAlignment(labelHorizontalAlignment);
-        userInfoPanel.add(idLabel, new GridBagConstraints(
-                currentColumn++, currentRow, 1, 1, labelWeightX, 0,
-                GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(topMargin, leftMargin, bottomMargin, rightMargin), 10, 10));
-
-        userId = new JLabel("");
-        MainFrame.setBasicInterface(userId);
-        userId.setHorizontalAlignment(valueHorizontalAlignment);
-        userInfoPanel.add(userId, new GridBagConstraints(
-                currentColumn--, currentRow++, 2, 1, valueWeightX, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(topMargin, leftMargin, bottomMargin, rightMargin), 10, 10));
-    }
-
-    private void initNameRow() {
-        nameLabel = new JLabel("Имя:");
-        MainFrame.setBasicInterface(nameLabel);
-        nameLabel.setBorder(null);
-        nameLabel.setHorizontalAlignment(labelHorizontalAlignment);
-        userInfoPanel.add(nameLabel, new GridBagConstraints(
-                currentColumn++, currentRow, 1, 1, labelWeightX, 0,
-                GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-
-        userName = new JLabel("");
-        MainFrame.setBasicInterface(userName);
-        userName.setHorizontalAlignment(valueHorizontalAlignment);
-        userInfoPanel.add(userName, new GridBagConstraints(
-                currentColumn--, currentRow++, 2, 1, valueWeightX, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-    }
-
-    private void initSurnameRow() {
-        surnameLabel = new JLabel("Фамилия:");
-        MainFrame.setBasicInterface(surnameLabel);
-        surnameLabel.setBorder(null);
-        surnameLabel.setHorizontalAlignment(labelHorizontalAlignment);
-        userInfoPanel.add(surnameLabel, new GridBagConstraints(
-                currentColumn++, currentRow, 1, 1, labelWeightX, 0,
-                GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-
-        userSurname = new JLabel("");
-        MainFrame.setBasicInterface(userSurname);
-        userSurname.setHorizontalAlignment(valueHorizontalAlignment);
-        userInfoPanel.add(userSurname, new GridBagConstraints(
-                currentColumn--, currentRow++, 2, 1, valueWeightX, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-    }
-
-    private void initPositionRow() {
-        positionLabel = new JLabel("Должность:");
-        MainFrame.setBasicInterface(positionLabel);
-        positionLabel.setBorder(null);
-        positionLabel.setHorizontalAlignment(labelHorizontalAlignment);
-        userInfoPanel.add(positionLabel, new GridBagConstraints(
-                currentColumn++, currentRow, 1, 1, labelWeightX, 0,
-                GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-
-        userPosition = new JLabel("");
-        MainFrame.setBasicInterface(userPosition);
-        userPosition.setHorizontalAlignment(valueHorizontalAlignment);
-        userInfoPanel.add(userPosition, new GridBagConstraints(
-                currentColumn--, currentRow++, 2, 1, valueWeightX, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-    }
-
-    private void initEmailRow() {
-        emailLabel = new JLabel("Email:");
-        MainFrame.setBasicInterface(emailLabel);
-        emailLabel.setBorder(null);
-        emailLabel.setHorizontalAlignment(labelHorizontalAlignment);
-        userInfoPanel.add(emailLabel, new GridBagConstraints(
-                currentColumn++, currentRow, 1, 1, labelWeightX, 0,
-                GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-
-        userEmail = new JLabel("");
-        MainFrame.setBasicInterface(userEmail);
-        userEmail.setHorizontalAlignment(valueHorizontalAlignment);
-        userInfoPanel.add(userEmail, new GridBagConstraints(
-                currentColumn--, currentRow++, 2, 1, valueWeightX, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-    }
-
     public void fill() {
-        userId.setText(String.valueOf(currentUser.getId()));
-        userName.setText(currentUser.getName());
-        userSurname.setText(currentUser.getSurname());
-        userPosition.setText(currentUser.getPosition());
-        userEmail.setText(currentUser.getEmail());
+        idValueLabel.setText(String.valueOf(currentUser.getId()));
+        nameValueLabel.setText(currentUser.getName());
+        surnameValueLabel.setText(currentUser.getSurname());
+        positionValueLabel.setText(currentUser.getPosition());
+        emailValueLabel.setText(currentUser.getEmail());
     }
 
     public void fill(User user) {
-        userId.setText(String.valueOf(user.getId()));
-        userName.setText(user.getName());
-        userSurname.setText(user.getSurname());
-        userPosition.setText(user.getPosition());
-        userEmail.setText(user.getEmail());
+        idValueLabel.setText(String.valueOf(user.getId()));
+        nameValueLabel.setText(user.getName());
+        surnameValueLabel.setText(user.getSurname());
+        positionValueLabel.setText(user.getPosition());
+        emailValueLabel.setText(user.getEmail());
     }
 }

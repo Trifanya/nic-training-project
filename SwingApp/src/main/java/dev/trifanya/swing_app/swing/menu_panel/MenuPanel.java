@@ -1,12 +1,11 @@
 package dev.trifanya.swing_app.swing.menu_panel;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import dev.trifanya.swing_app.swing.MainFrame;
+
 import lombok.Getter;
 import lombok.Setter;
 
 import java.awt.*;
-import javax.jms.JMSException;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -48,6 +47,8 @@ public class MenuPanel extends JPanel {
 
         int gridy = 0;
         for (JButton button : buttons) {
+            button.setPreferredSize(new Dimension(200, 40));
+            MainFrame.setBasicInterface(button);
             add(button, new GridBagConstraints(
                     0, gridy++, 1, 1, 0, 0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -57,18 +58,10 @@ public class MenuPanel extends JPanel {
 
     private void taskListButtonInit() {
         taskListButton = new JButton("Список задач");
-        taskListButton.setPreferredSize(new Dimension(200, 40));
-        MainFrame.setBasicInterface(taskListButton);
         taskListButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    mainFrame.getTaskMessageProducer().sendGetTaskListMessage(mainFrame.getSortAndFiltersPanel().getFilters());
-                } catch (JsonProcessingException ex) {
-                    throw new RuntimeException(ex);
-                } catch (JMSException ex) {
-                    throw new RuntimeException(ex);
-                }
+                mainFrame.getContentLayeredPane().setCurrentPanel(mainFrame.getContentLayeredPane().getTaskListPanel());
             }
         });
         buttons.add(taskListButton);
@@ -77,8 +70,6 @@ public class MenuPanel extends JPanel {
 
     private void newTaskButtonInit() {
         newTaskButton = new JButton("Создать задачу");
-        newTaskButton.setPreferredSize(new Dimension(200, 40));
-        MainFrame.setBasicInterface(newTaskButton);
         newTaskButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -93,18 +84,10 @@ public class MenuPanel extends JPanel {
 
     private void userListButtonInit() {
         userListButton = new JButton("Список участников");
-        userListButton.setPreferredSize(new Dimension(200, 40));
-        MainFrame.setBasicInterface(userListButton);
         userListButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    mainFrame.getUserMessageProducer().sendGetUserListMessage(null);
-                } catch (JsonProcessingException ex) {
-                    throw new RuntimeException(ex);
-                } catch (JMSException ex) {
-                    throw new RuntimeException(ex);
-                }
+                mainFrame.getContentLayeredPane().setCurrentPanel(mainFrame.getContentLayeredPane().getUserListPanel());
             }
         });
         buttons.add(userListButton);
@@ -113,8 +96,6 @@ public class MenuPanel extends JPanel {
 
     private void userDetailsButtonInit() {
         userDetailsButton = new JButton("Профиль");
-        userDetailsButton.setPreferredSize(new Dimension(200, 40));
-        MainFrame.setBasicInterface(userDetailsButton);
         userDetailsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -128,8 +109,6 @@ public class MenuPanel extends JPanel {
 
     private void signInButtonInit() {
         signInButton = new JButton("Вход");
-        signInButton.setPreferredSize(new Dimension(200, 40));
-        MainFrame.setBasicInterface(signInButton);
         signInButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -142,13 +121,12 @@ public class MenuPanel extends JPanel {
 
     private void signOutButtonInit() {
         signOutButton = new JButton("Выход");
-        signOutButton.setPreferredSize(new Dimension(200, 40));
-        MainFrame.setBasicInterface(signOutButton);
         signOutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String question = "Вы уверены, что хотите выйти из аккаунта?";
-                if (JOptionPane.showConfirmDialog(MenuPanel.this, question, "Подтверждение", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+                if (JOptionPane.showConfirmDialog(mainFrame.getContentLayeredPane(), question,
+                        "Подтверждение", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
                     return;
                 }
                 changeLoginStatus();
@@ -161,8 +139,6 @@ public class MenuPanel extends JPanel {
 
     private void signUpButtonInit() {
         signUpButton = new JButton("Регистрация");
-        signUpButton.setPreferredSize(new Dimension(200, 40));
-        MainFrame.setBasicInterface(signUpButton);
         signUpButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

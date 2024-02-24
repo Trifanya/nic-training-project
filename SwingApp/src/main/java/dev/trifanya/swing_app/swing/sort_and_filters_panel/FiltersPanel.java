@@ -1,10 +1,14 @@
 package dev.trifanya.swing_app.swing.sort_and_filters_panel;
 
+import dev.trifanya.server_app.model.TaskPriority;
+import dev.trifanya.server_app.model.TaskStatus;
 import dev.trifanya.swing_app.swing.MainFrame;
 import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 public class FiltersPanel extends JPanel {
@@ -90,5 +94,22 @@ public class FiltersPanel extends JPanel {
                 GridBagConstraints.PAGE_START, GridBagConstraints.BOTH,
                 new Insets(0, 0, 0, 0), 0, 0
         ));
+    }
+
+    public Map<String, String> getFilters() {
+        Map<String, String> filters = new HashMap<>();
+        StringBuilder priorityValues = new StringBuilder();
+        if (lowPriorityBox.isSelected()) priorityValues.append(TaskPriority.LOW);
+        if (mediumPriorityBox.isSelected()) priorityValues.append("," + TaskPriority.MEDIUM);
+        if (highPriorityBox.isSelected()) priorityValues.append("," + TaskPriority.HIGH);
+        filters.put("priorityValues", priorityValues.toString());
+
+        StringBuilder statusValues = new StringBuilder();
+        if (notStartedStatusBox.isSelected()) statusValues.append(TaskStatus.NOT_STARTED);
+        if (inProgressStatusBox.isSelected()) statusValues.append("," + TaskStatus.IN_PROGRESS);
+        if (completedStatusBox.isSelected()) statusValues.append("," + TaskStatus.COMPLETED);
+        filters.put("statusValues", statusValues.toString());
+
+        return filters;
     }
 }

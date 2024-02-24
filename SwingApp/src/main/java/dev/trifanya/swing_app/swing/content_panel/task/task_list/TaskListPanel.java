@@ -1,20 +1,20 @@
 package dev.trifanya.swing_app.swing.content_panel.task.task_list;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import dev.trifanya.server_app.service.TaskService;
+import dev.trifanya.server_app.model.Task;
 import dev.trifanya.swing_app.swing.MainFrame;
 import dev.trifanya.swing_app.swing.content_panel.ContentLayeredPane;
+
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.jms.JMSException;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,17 +24,15 @@ public class TaskListPanel extends JPanel /*implements Runnable*/ {
     private JLabel taskListLabel;
 
     private TaskTableModel taskTableModel;
-    private TaskTable taskTable;
-    private TaskListScrollPane taskListScrollPane;
+    private JTable taskTable;
+    private JScrollPane taskListScrollPane;
 
     private JButton taskDetailsButton;
     private JButton createTaskButton;
     private JButton updateTaskButton;
     private JButton deleteTaskButton;
 
-    //private Map<String, String> taskFilters;
-    //private String sortByColumn = "id";
-    //private String sortDir = "ASC";
+    private List<JButton> panelButtons = new ArrayList<>();
 
     public TaskListPanel() {
         setLayout(new GridBagLayout());
@@ -52,8 +50,8 @@ public class TaskListPanel extends JPanel /*implements Runnable*/ {
                 new Insets(25, 25, 25, 25), 30, 20));
 
         taskTableModel = new TaskTableModel();
-        taskTable = new TaskTable(taskTableModel);
-        taskListScrollPane = new TaskListScrollPane(taskTable);
+        initTaskTable();
+        initScrollPane();
 
         add(taskListScrollPane, new GridBagConstraints(
                 0, 1, 4, 1, 1, 1,
@@ -61,35 +59,26 @@ public class TaskListPanel extends JPanel /*implements Runnable*/ {
                 new Insets(0, 25, 25, 25), 0, 0));
 
         initTaskDetailsButton();
-        add(taskDetailsButton, new GridBagConstraints(
-                0, 2, 1, 1, 1, 0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(0, 25, 25, 25), 0, 0));
-
         initCreateTaskButton();
-        add(createTaskButton, new GridBagConstraints(
-                1, 2, 1, 1, 1, 0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(0, 25, 25, 25), 0, 0));
-
         initUpdateTaskButton();
-        add(updateTaskButton, new GridBagConstraints(
-                2, 2, 1, 1, 1, 0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(0, 25, 25, 25), 0, 0));
-
         initDeleteTaskButton();
-        add(deleteTaskButton, new GridBagConstraints(
-                3, 2, 1, 1, 1, 0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(0, 25, 25, 25), 0, 0));
 
-        //taskFilters = new HashMap<>();
+        int gridx = 0;
+        for (JButton button : panelButtons) {
+            button.setBackground(MainFrame.firstColor);
+            button.setForeground(MainFrame.secondColor);
+            button.setFont(MainFrame.font);
+            button.setBorder(new LineBorder(MainFrame.secondColor, 3, true));
+            add(button, new GridBagConstraints(
+                    gridx++, 2, 1, 1, 1, 0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 25, 25, 25), 0, 10));
+        }
 
-        //(new Thread(this)).start();
+        /*(new Thread(this)).start();*/
     }
 
-    public void initTaskListLabel() {
+    private void initTaskListLabel() {
         taskListLabel = new JLabel("СПИСОК ЗАДАЧ");
         taskListLabel.setBackground(MainFrame.firstColor);
         taskListLabel.setForeground(MainFrame.secondColor);
@@ -98,12 +87,31 @@ public class TaskListPanel extends JPanel /*implements Runnable*/ {
         taskListLabel.setHorizontalAlignment(SwingConstants.CENTER);
     }
 
-    public void initTaskDetailsButton() {
+    private void initTaskTable() {
+        taskTable = new JTable(taskTableModel);
+        taskTable.setBackground(MainFrame.firstColor);
+        taskTable.setForeground(MainFrame.secondColor);
+        taskTable.setFont(MainFrame.font);
+        JTableHeader header = taskTable.getTableHeader();
+        header.setBackground(MainFrame.firstColor);
+        header.setForeground(MainFrame.secondColor);
+        header.setFont(MainFrame.font);
+        taskTable.setGridColor(MainFrame.secondColor);
+        taskTable.setSelectionBackground(MainFrame.secondColor);
+        taskTable.setSelectionForeground(MainFrame.firstColor);
+        taskTable.setFillsViewportHeight(true);
+    }
+
+    private void initScrollPane() {
+        taskListScrollPane = new JScrollPane(taskTable);
+        taskListScrollPane.getViewport().setBackground(MainFrame.firstColor);
+        taskListScrollPane.setBorder(new LineBorder(MainFrame.secondColor, 3, true));
+        taskListScrollPane.setVerticalScrollBar(new JScrollBar());
+        taskListScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+    }
+
+    private void initTaskDetailsButton() {
         taskDetailsButton = new JButton("Подробнее");
-        taskDetailsButton.setBackground(MainFrame.firstColor);
-        taskDetailsButton.setForeground(MainFrame.secondColor);
-        taskDetailsButton.setFont(MainFrame.font);
-        taskDetailsButton.setBorder(new LineBorder(MainFrame.secondColor, 3, true));
         taskDetailsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -113,21 +121,17 @@ public class TaskListPanel extends JPanel /*implements Runnable*/ {
                     return;
                 }
                 int taskId = Integer.valueOf(taskTableModel.getValueAt(selectedRow, 0));
-                try {
-                    contentLayeredPane.getMainFrame().getTaskMessageProducer().sendGetTaskMessage(taskId);
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
+                Task currentTask = contentLayeredPane.getTaskListPanel().getTaskTableModel().getTaskById(taskId);
+                contentLayeredPane.getTaskDetailsPanel().setCurrentTask(currentTask);
+                contentLayeredPane.getTaskDetailsPanel().fill();
+                contentLayeredPane.setCurrentPanel(contentLayeredPane.getTaskDetailsPanel());
             }
         });
+        panelButtons.add(taskDetailsButton);
     }
 
-    public void initCreateTaskButton() {
+    private void initCreateTaskButton() {
         createTaskButton = new JButton("Создать");
-        createTaskButton.setBackground(MainFrame.firstColor);
-        createTaskButton.setForeground(MainFrame.secondColor);
-        createTaskButton.setFont(MainFrame.font);
-        createTaskButton.setBorder(new LineBorder(MainFrame.secondColor, 3, true));
         createTaskButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -135,14 +139,11 @@ public class TaskListPanel extends JPanel /*implements Runnable*/ {
                 contentLayeredPane.setCurrentPanel(contentLayeredPane.getTaskFormPanel());
             }
         });
+        panelButtons.add(createTaskButton);
     }
 
-    public void initUpdateTaskButton() {
+    private void initUpdateTaskButton() {
         updateTaskButton = new JButton("Редактировать");
-        updateTaskButton.setBackground(MainFrame.firstColor);
-        updateTaskButton.setForeground(MainFrame.secondColor);
-        updateTaskButton.setFont(MainFrame.font);
-        updateTaskButton.setBorder(new LineBorder(MainFrame.secondColor, 3, true));
         updateTaskButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -152,21 +153,16 @@ public class TaskListPanel extends JPanel /*implements Runnable*/ {
                     return;
                 }
                 int taskId = Integer.valueOf(taskTableModel.getValueAt(selectedRow, 0));
-                try {
-                    contentLayeredPane.getMainFrame().getTaskMessageProducer().sendGetTaskMessage(taskId);
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
+                Task currentTask = contentLayeredPane.getTaskListPanel().getTaskTableModel().getTaskById(taskId);
+                contentLayeredPane.getTaskFormPanel().setCurrentTask(currentTask);
+                contentLayeredPane.setCurrentPanel(contentLayeredPane.getTaskFormPanel());
             }
         });
+        panelButtons.add(updateTaskButton);
     }
 
-    public void initDeleteTaskButton() {
+    private void initDeleteTaskButton() {
         deleteTaskButton = new JButton("Удалить");
-        deleteTaskButton.setBackground(MainFrame.firstColor);
-        deleteTaskButton.setForeground(MainFrame.secondColor);
-        deleteTaskButton.setFont(MainFrame.font);
-        deleteTaskButton.setBorder(new LineBorder(MainFrame.secondColor, 3, true));
         deleteTaskButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -176,23 +172,25 @@ public class TaskListPanel extends JPanel /*implements Runnable*/ {
                     return;
                 }
                 int taskId = Integer.valueOf(taskTableModel.getValueAt(selectedRow, 0));
-                try {
-                    contentLayeredPane.getMainFrame().getTaskMessageProducer().sendDeleteTaskMessage(taskId);
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
+                contentLayeredPane.getMainFrame().getTaskMessageProducer().sendDeleteTaskMessage(taskId);
             }
         });
+        panelButtons.add(deleteTaskButton);
     }
 
+    /** Метод для регулярного обновления списка задач */
     /*@Override
     public void run() {
         while (true) {
             try {
-                taskTableModel.fillTable(taskFilters, sortByColumn, sortDir);
-                this.repaint();
-                Thread.sleep(3000);
+                Map<String, String> filters = contentLayeredPane.getMainFrame().getSortAndFiltersPanel().getFilters();
+                contentLayeredPane.getMainFrame().getTaskMessageProducer().sendGetTaskListMessage(filters);
+                Thread.sleep(10000);
             } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (JMSException e) {
+                throw new RuntimeException(e);
+            } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
         }

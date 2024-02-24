@@ -2,63 +2,63 @@ package dev.trifanya.swing_app.swing.content_panel.task.task_page;
 
 import dev.trifanya.server_app.model.Task;
 import dev.trifanya.swing_app.swing.MainFrame;
+
 import lombok.Getter;
 import lombok.Setter;
 
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-import java.awt.*;
+import java.util.Map;
+import java.util.LinkedHashMap;
 
-@Setter
 @Getter
+@Setter
 public class TaskDetailsPanel extends JPanel {
     private Task currentTask;
 
     private JLabel pageTitleLabel;
-
     private JPanel taskInfoPanel;
 
     private JLabel idLabel;
-    private JLabel taskId;
-
     private JLabel titleLabel;
-    private JLabel taskTitle;
-
     private JLabel authorLabel;
-    private JLabel taskAuthor;
-
     private JLabel performerLabel;
-    private JLabel taskPerformer;
-
     private JLabel priorityLabel;
-    private JLabel taskPriority;
-
     private JLabel statusLabel;
-    private JLabel taskStatus;
-
     private JLabel creationDateLabel;
-    private JLabel taskCreationDate;
-
     private JLabel deadlineLabel;
-    private JLabel taskDeadline;
-
     private JLabel descriptionLabel;
-    private JLabel taskDescription;
 
-    private final int leftMargin = 25;
-    private final int rightMargin = 25;
-    private final int topMargin = 25;
-    private final int bottomMargin = 25;
+    private JLabel idValueLabel;
+    private JLabel titleValueLabel;
+    private JLabel authorValueLabel;
+    private JLabel performerValueLabel;
+    private JLabel priorityValueLabel;
+    private JLabel statusValueLabel;
+    private JLabel creationDateValueLabel;
+    private JLabel deadlineValueLabel;
+    private JLabel descriptionValueLabel;
 
-    private int currentRow = 0;
-    private int currentColumn = 0;
+    private Map<JLabel, JLabel> panelLines = new LinkedHashMap<>();
 
-    private double labelWeightX = 0;
-    private double labelWeightY = 0;
-    private double valueWeightX = 1;
-    private double valueWeightY = 0;
+    private final int leftMargin = 15;
+    private final int rightMargin = 15;
+    private final int topMargin = 10;
+    private final int bottomMargin = 10;
 
-    private final int labelHorizontalAlignment = SwingConstants.LEFT;
+    private final int labelGridWidth = 1;
+    private final int labelGridHeight = 1;
+    private final int valueGridWidth = 1;
+    private final int valueGridHeight = 1;
+
+    private final double labelWeightX = 0;
+    private final double labelWeightY = 0;
+    private final double valueWeightX = 1;
+    private final double valueWeightY = 0;
+
+    private final int ipadx = 10;
+    private final int ipady = 15;
 
     public TaskDetailsPanel() {
         setLayout(new GridBagLayout());
@@ -70,17 +70,56 @@ public class TaskDetailsPanel extends JPanel {
     public void init() {
         initPageTitleLabel();
         initTaskInfoPanel();
-        initIdRow();
-        initTaskTitleRow();
-        initAuthorRow();
-        initPerformerRow();
-        initStatusRow();
-        initPriorityRow();
-        initCreationDateRow();
-        initDeadlineRow();
-        initDescriptionRow();
-    }
 
+        idLabel = new JLabel("ID:");
+        titleLabel = new JLabel("Заголовок:");
+        authorLabel = new JLabel("Автор:");
+        performerLabel = new JLabel("Исполнитель:");
+        statusLabel = new JLabel("Статус:");
+        priorityLabel = new JLabel("Приоритет:");
+        creationDateLabel = new JLabel("Дата создания:");
+        deadlineLabel = new JLabel("Дедлайн:");
+        descriptionLabel = new JLabel("Описание:");
+
+        idValueLabel = new JLabel("");
+        titleValueLabel = new JLabel("");
+        authorValueLabel = new JLabel("");
+        performerValueLabel = new JLabel("");
+        statusValueLabel = new JLabel("");
+        priorityValueLabel = new JLabel("");
+        creationDateValueLabel = new JLabel();
+        deadlineValueLabel = new JLabel("");
+        descriptionValueLabel = new JLabel("");
+
+        panelLines.put(idLabel, idValueLabel);
+        panelLines.put(titleLabel, titleValueLabel);
+        panelLines.put(authorLabel, authorValueLabel);
+        panelLines.put(performerLabel, performerValueLabel);
+        panelLines.put(statusLabel, statusValueLabel);
+        panelLines.put(priorityLabel, priorityValueLabel);
+        panelLines.put(creationDateLabel, creationDateValueLabel);
+        panelLines.put(deadlineLabel, deadlineValueLabel);
+        panelLines.put(descriptionLabel, descriptionValueLabel);
+
+        int currentRow = 0;
+        int currentColumn = 0;
+        for (Map.Entry<JLabel, JLabel> panelLine : panelLines.entrySet()) {
+            MainFrame.setBasicInterface(panelLine.getKey());
+            panelLine.getKey().setBorder(null);
+            panelLine.getKey().setHorizontalAlignment(SwingConstants.RIGHT);
+            taskInfoPanel.add(panelLine.getKey(), new GridBagConstraints(
+                    currentColumn++, currentRow, labelGridWidth, labelGridHeight, labelWeightX, labelWeightY,
+                    GridBagConstraints.EAST, GridBagConstraints.NONE,
+                    new Insets(topMargin, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
+            MainFrame.setBasicInterface(panelLine.getValue());
+            panelLine.getValue().setHorizontalAlignment(SwingConstants.CENTER);
+            taskInfoPanel.add(panelLine.getValue(), new GridBagConstraints(
+                    currentColumn--, currentRow++, valueGridWidth, valueGridHeight, valueWeightX, valueWeightY,
+                    GridBagConstraints.WEST, GridBagConstraints.BOTH,
+                    new Insets(topMargin, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
+
+        }
+    }
 
     private void initPageTitleLabel() {
         pageTitleLabel = new JLabel("ИНФОРМАЦИЯ О ЗАДАЧЕ");
@@ -102,186 +141,15 @@ public class TaskDetailsPanel extends JPanel {
                 new Insets(0, 25, 25, 25), 0, 0));
     }
 
-    private void initIdRow() {
-        idLabel = new JLabel("ID:");
-        MainFrame.setBasicInterface(idLabel);
-        idLabel.setBorder(null);
-        idLabel.setHorizontalAlignment(labelHorizontalAlignment);
-        taskInfoPanel.add(idLabel, new GridBagConstraints(
-                currentColumn++, currentRow, 1, 1, labelWeightX, 0,
-                GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(topMargin, leftMargin, bottomMargin, rightMargin), 10, 10));
-
-        taskId = new JLabel("");
-        MainFrame.setBasicInterface(taskId);
-        taskId.setHorizontalAlignment(SwingConstants.CENTER);
-        taskInfoPanel.add(taskId, new GridBagConstraints(
-                currentColumn--, currentRow++, 1, 1, valueWeightX, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(topMargin, leftMargin, bottomMargin, rightMargin), 10, 10));
-    }
-
-    private void initTaskTitleRow() {
-        titleLabel = new JLabel("Заголовок:");
-        MainFrame.setBasicInterface(titleLabel);
-        titleLabel.setBorder(null);
-        titleLabel.setHorizontalAlignment(labelHorizontalAlignment);
-        taskInfoPanel.add(titleLabel, new GridBagConstraints(
-                currentColumn++, currentRow, 1, 1, labelWeightX, 0,
-                GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-
-        taskTitle = new JLabel("");
-        MainFrame.setBasicInterface(taskTitle);
-        taskTitle.setHorizontalAlignment(SwingConstants.CENTER);
-        taskInfoPanel.add(taskTitle, new GridBagConstraints(
-                currentColumn--, currentRow++, 1, 1, valueWeightX, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-    }
-
-    private void initAuthorRow() {
-        authorLabel = new JLabel("Автор:");
-        MainFrame.setBasicInterface(authorLabel);
-        authorLabel.setBorder(null);
-        authorLabel.setHorizontalAlignment(labelHorizontalAlignment);
-        taskInfoPanel.add(authorLabel, new GridBagConstraints(
-                currentColumn++, currentRow, 1, 1, labelWeightX, 0,
-                GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-
-        taskAuthor = new JLabel("");
-        MainFrame.setBasicInterface(taskAuthor);
-        taskAuthor.setHorizontalAlignment(SwingConstants.CENTER);
-        taskInfoPanel.add(taskAuthor, new GridBagConstraints(
-                currentColumn--, currentRow++, 1, 1, valueWeightX, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-    }
-
-    private void initPerformerRow() {
-        performerLabel = new JLabel("Исполнитель:");
-        MainFrame.setBasicInterface(performerLabel);
-        performerLabel.setBorder(null);
-        performerLabel.setHorizontalAlignment(labelHorizontalAlignment);
-        taskInfoPanel.add(performerLabel, new GridBagConstraints(
-                currentColumn++, currentRow, 1, 1, labelWeightX, 0,
-                GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-
-        taskPerformer = new JLabel("");
-        MainFrame.setBasicInterface(taskPerformer);
-        taskPerformer.setHorizontalAlignment(SwingConstants.CENTER);
-        taskInfoPanel.add(taskPerformer, new GridBagConstraints(
-                currentColumn--, currentRow++, 1, 1, valueWeightX, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-    }
-
-    private void initStatusRow() {
-        statusLabel = new JLabel("Статус:");
-        MainFrame.setBasicInterface(statusLabel);
-        statusLabel.setBorder(null);
-        statusLabel.setHorizontalAlignment(labelHorizontalAlignment);
-        taskInfoPanel.add(statusLabel, new GridBagConstraints(
-                currentColumn++, currentRow, 1, 1, labelWeightX, 0,
-                GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-
-        taskStatus = new JLabel("");
-        MainFrame.setBasicInterface(taskStatus);
-        taskStatus.setHorizontalAlignment(SwingConstants.CENTER);
-        taskInfoPanel.add(taskStatus, new GridBagConstraints(
-                currentColumn--, currentRow++, 1, 1, valueWeightX, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-    }
-
-    private void initPriorityRow() {
-        priorityLabel = new JLabel("Приоритет:");
-        MainFrame.setBasicInterface(priorityLabel);
-        priorityLabel.setBorder(null);
-        priorityLabel.setHorizontalAlignment(labelHorizontalAlignment);
-        taskInfoPanel.add(priorityLabel, new GridBagConstraints(
-                currentColumn++, currentRow, 1, 1, labelWeightX, 0,
-                GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-
-        taskPriority = new JLabel("");
-        MainFrame.setBasicInterface(taskPriority);
-        taskPriority.setHorizontalAlignment(SwingConstants.CENTER);
-        taskInfoPanel.add(taskPriority, new GridBagConstraints(
-                currentColumn--, currentRow++, 1, 1, valueWeightX, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-    }
-
-    private void initCreationDateRow() {
-        creationDateLabel = new JLabel("Дата создания:");
-        MainFrame.setBasicInterface(creationDateLabel);
-        creationDateLabel.setBorder(null);
-        creationDateLabel.setHorizontalAlignment(labelHorizontalAlignment);
-        taskInfoPanel.add(creationDateLabel, new GridBagConstraints(
-                currentColumn++, currentRow, 1, 1, labelWeightX, 0,
-                GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-
-        taskCreationDate = new JLabel();
-        MainFrame.setBasicInterface(taskCreationDate);
-        taskCreationDate.setHorizontalAlignment(SwingConstants.CENTER);
-        taskInfoPanel.add(taskCreationDate, new GridBagConstraints(
-                currentColumn--, currentRow++, 1, 1, valueWeightX, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-    }
-
-    private void initDeadlineRow() {
-        deadlineLabel = new JLabel("Дедлайн:");
-        MainFrame.setBasicInterface(deadlineLabel);
-        deadlineLabel.setBorder(null);
-        deadlineLabel.setHorizontalAlignment(labelHorizontalAlignment);
-        taskInfoPanel.add(deadlineLabel, new GridBagConstraints(
-                currentColumn++, currentRow, 1, 1, labelWeightX, 0,
-                GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-
-        taskDeadline = new JLabel("");
-        MainFrame.setBasicInterface(taskDeadline);
-        taskDeadline.setHorizontalAlignment(SwingConstants.CENTER);
-        taskInfoPanel.add(taskDeadline, new GridBagConstraints(
-                currentColumn--, currentRow++, 1, 1, valueWeightX, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-    }
-
-    private void initDescriptionRow() {
-        descriptionLabel = new JLabel("Описание:");
-        MainFrame.setBasicInterface(descriptionLabel);
-        descriptionLabel.setBorder(null);
-        descriptionLabel.setHorizontalAlignment(labelHorizontalAlignment);
-        taskInfoPanel.add(descriptionLabel, new GridBagConstraints(
-                currentColumn++, currentRow, 1, 1, labelWeightX, 0,
-                GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-
-        taskDescription = new JLabel("");
-        MainFrame.setBasicInterface(taskDescription);
-        taskDescription.setHorizontalAlignment(SwingConstants.CENTER);
-        taskInfoPanel.add(taskDescription, new GridBagConstraints(
-                currentColumn--, currentRow++, 1, 1, valueWeightX, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 10, 10));
-    }
-
     public void fill() {
-        taskId.setText(String.valueOf(currentTask.getId()));
-        taskTitle.setText(currentTask.getTitle());
-        taskAuthor.setText(currentTask.getAuthor().getEmail());
-        taskPerformer.setText(currentTask.getPerformer().getEmail());
-        taskPriority.setText(currentTask.getPriority().getRuString());
-        taskStatus.setText(currentTask.getStatus().getRuString());
-        taskCreationDate.setText(currentTask.getCreatedAt().toString());
-        taskDeadline.setText(currentTask.getDeadline().toString());
-        taskDescription.setText(currentTask.getDescription());
+        idValueLabel.setText(String.valueOf(currentTask.getId()));
+        titleValueLabel.setText(currentTask.getTitle());
+        authorValueLabel.setText(currentTask.getAuthor().getEmail());
+        performerValueLabel.setText(currentTask.getPerformer().getEmail());
+        priorityValueLabel.setText(currentTask.getPriority().getRuString());
+        statusValueLabel.setText(currentTask.getStatus().getRuString());
+        creationDateValueLabel.setText(currentTask.getCreatedAt().toString());
+        deadlineValueLabel.setText(currentTask.getDeadline().toString());
+        descriptionValueLabel.setText(currentTask.getDescription());
     }
 }

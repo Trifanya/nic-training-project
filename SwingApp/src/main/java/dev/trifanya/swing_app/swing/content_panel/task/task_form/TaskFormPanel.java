@@ -1,13 +1,11 @@
 package dev.trifanya.swing_app.swing.content_panel.task.task_form;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.lgooddatepicker.components.DateTimePicker;
 
 import dev.trifanya.server_app.model.Task;
 import dev.trifanya.server_app.model.TaskPriority;
 import dev.trifanya.server_app.model.TaskStatus;
 import dev.trifanya.server_app.model.User;
-import dev.trifanya.server_app.validator.TaskValidator;
 import dev.trifanya.swing_app.swing.content_panel.ContentLayeredPane;
 
 import lombok.Getter;
@@ -16,19 +14,38 @@ import lombok.Setter;
 import dev.trifanya.swing_app.swing.MainFrame;
 
 import java.awt.*;
-import javax.jms.JMSException;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import javax.swing.border.LineBorder;
 import java.awt.event.ActionListener;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
 public class TaskFormPanel extends JPanel {
     private Task currentTask;
-    private TaskValidator taskValidator;
 
     private ContentLayeredPane contentLayeredPane;
+
+    private JLabel pageTitleLabel;
+    private JPanel taskFormPanel;
+    private JButton submitButton;
+
+    private JLabel titleLabel;
+    private JLabel performerLabel;
+    private JLabel priorityLabel;
+    private JLabel deadlineDateLabel;
+    private JLabel descriptionLabel;
+
+    private JTextField titleField;
+    private JComboBox performerBox;
+    private JComboBox priorityBox;
+    private DateTimePicker dateTimePicker;
+    private JTextArea descriptionArea;
+
+    private Map<JLabel, JComponent> formLines = new LinkedHashMap<>();
 
     private final int leftMargin = 25;
     private final int rightMargin = 25;
@@ -38,33 +55,12 @@ public class TaskFormPanel extends JPanel {
     private int currentRow = 0;
     private int currentColumn = 0;
 
-    private int ipadx = 10;
-    private int ipady = 10;
+    private int ipadx = 0;
+    private int ipady = 0;
 
     private final int labelHorizontalAlignment = SwingConstants.LEFT;
 
-    private JLabel pageTitleLabel;
-    private JPanel taskFormPanel;
-
-    private JLabel titleLabel;
-    private JTextField titleField;
-
-    private JLabel performerLabel;
-    private JComboBox performerBox;
-
-    private JLabel priorityLabel;
-    private JComboBox priorityBox;
-
-    private JLabel deadlineDateLabel;
-    private DateTimePicker dateTimePicker;
-
-    private JLabel descriptionLabel;
-    private JTextArea descriptionArea;
-
-    private JButton submitButton;
-
     public TaskFormPanel() {
-        taskValidator = new TaskValidator();
         setLayout(new GridBagLayout());
         setMinimumSize(new Dimension(600, 400));
         setBackground(MainFrame.firstColor);
@@ -82,6 +78,20 @@ public class TaskFormPanel extends JPanel {
         initDeadlineRow();
         initDescriptionRow();
         initSubmitButton();
+
+        for (Map.Entry<JLabel, JComponent> formLine : formLines.entrySet()) {
+            MainFrame.setBasicInterface(formLine.getKey());
+            formLine.getKey().setHorizontalAlignment(labelHorizontalAlignment);
+            formLine.getKey().setBorder(null);
+            taskFormPanel.add(formLine.getKey(), new GridBagConstraints(
+                    currentColumn++, currentRow, 1, 1, 0, 0,
+                    GridBagConstraints.EAST, GridBagConstraints.NONE,
+                    new Insets(topMargin, leftMargin, bottomMargin, 0), ipadx, ipady));
+            taskFormPanel.add(formLine.getValue(), new GridBagConstraints(
+                    currentColumn--, currentRow++, 1, 1, 0, 0,
+                    GridBagConstraints.WEST, GridBagConstraints.BOTH,
+                    new Insets(10, leftMargin, 10, rightMargin), ipadx, ipady));
+        }
     }
 
     public void initPageTitleLabel() {
@@ -101,113 +111,7 @@ public class TaskFormPanel extends JPanel {
         add(taskFormPanel, new GridBagConstraints(
                 0, 1, 1, 1, 1, 1,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(0, 25, 25, 25), 0, 0));
-    }
-
-    private void initTaskTitleRow() {
-        titleLabel = new JLabel("Заголовок:");
-        MainFrame.setBasicInterface(titleLabel);
-        titleLabel.setBorder(null);
-        titleLabel.setHorizontalAlignment(labelHorizontalAlignment);
-        taskFormPanel.add(titleLabel, new GridBagConstraints(currentColumn++, currentRow, 1, 1, 0, 0,
-                GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(topMargin, leftMargin, bottomMargin, 0), ipadx, ipady));
-
-        titleField = new JTextField();
-        titleField.setColumns(40);
-        MainFrame.setBasicInterface(titleField);
-        titleField.setCaretColor(MainFrame.secondColor);
-        titleField.setHorizontalAlignment(SwingConstants.CENTER);
-        taskFormPanel.add(titleField, new GridBagConstraints(currentColumn--, currentRow++, 1, 1, 0, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(topMargin, leftMargin, bottomMargin, rightMargin), (int) (ipadx * 1.8), (int) (ipady * 1.8)));
-    }
-
-    private void initPerformerRow() {
-        performerLabel = new JLabel("Исполнитель:");
-        MainFrame.setBasicInterface(performerLabel);
-        performerLabel.setBorder(null);
-        performerLabel.setHorizontalAlignment(labelHorizontalAlignment);
-        taskFormPanel.add(performerLabel, new GridBagConstraints(currentColumn++, currentRow, 1, 1, 0, 0,
-                GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, 0), ipadx, ipady));
-
-        performerBox = new JComboBox();
-        MainFrame.setBasicInterface(performerBox);
-        ((JLabel) performerBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
-        for (User user : contentLayeredPane.getUserListPanel().getUserTableModel().getUserList()) {
-            performerBox.addItem(user.getEmail() + " (" + user.getName() + " " + user.getSurname() + ")");
-        }
-        taskFormPanel.add(performerBox, new GridBagConstraints(currentColumn--, currentRow++, 1, 1, 0, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
-    }
-
-    private void initPriorityRow() {
-        priorityLabel = new JLabel("Приоритет:");
-        MainFrame.setBasicInterface(priorityLabel);
-        priorityLabel.setBorder(null);
-        priorityLabel.setHorizontalAlignment(labelHorizontalAlignment);
-        taskFormPanel.add(priorityLabel, new GridBagConstraints(currentColumn++, currentRow, 1, 1, 0, 0,
-                GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, 0), ipadx, ipady));
-
-        priorityBox = new JComboBox();
-        MainFrame.setBasicInterface(priorityBox);
-        ((JLabel) priorityBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
-        for (TaskPriority priority : TaskPriority.values()) {
-            priorityBox.addItem(priority.getRuString());
-        }
-        taskFormPanel.add(priorityBox, new GridBagConstraints(currentColumn--, currentRow++, 1, 1, 0, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
-    }
-
-    private void initDeadlineRow() {
-        deadlineDateLabel = new JLabel("Дедлайн:");
-        MainFrame.setBasicInterface(deadlineDateLabel);
-        deadlineDateLabel.setBorder(null);
-        deadlineDateLabel.setHorizontalAlignment(labelHorizontalAlignment);
-        taskFormPanel.add(deadlineDateLabel, new GridBagConstraints(
-                currentColumn++, currentRow, 1, 1, 0, 0,
-                GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, 0), ipadx, ipady));
-
-        dateTimePicker = new DateTimePicker();
-
-        dateTimePicker.getDatePicker().setBorder(MainFrame.border);
-        dateTimePicker.getDatePicker().getSettings().setFontValidDate(MainFrame.font);
-        dateTimePicker.getDatePicker().getSettings().setFontInvalidDate(MainFrame.font);
-        dateTimePicker.getDatePicker().getComponentDateTextField().setHorizontalAlignment(SwingConstants.CENTER);
-
-        dateTimePicker.getTimePicker().setBorder(MainFrame.border);
-        dateTimePicker.getTimePicker().getSettings().fontValidTime = MainFrame.font;
-        dateTimePicker.getTimePicker().getSettings().fontInvalidTime = MainFrame.font;
-        dateTimePicker.getTimePicker().getComponentTimeTextField().setHorizontalAlignment(SwingConstants.CENTER);
-
-        taskFormPanel.add(dateTimePicker, new GridBagConstraints(
-                currentColumn--, currentRow++, 1, 1, 0, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), ipadx, 13));
-    }
-
-    private void initDescriptionRow() {
-        descriptionLabel = new JLabel("Описание:");
-        MainFrame.setBasicInterface(descriptionLabel);
-        descriptionLabel.setBorder(null);
-        descriptionLabel.setHorizontalAlignment(labelHorizontalAlignment);
-        descriptionLabel.setVerticalAlignment(SwingConstants.TOP);
-        taskFormPanel.add(descriptionLabel, new GridBagConstraints(currentColumn++, currentRow, 1, 1, 0, 0,
-                GridBagConstraints.NORTHEAST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, 0), ipadx, ipady));
-
-        descriptionArea = new JTextArea();
-        descriptionArea.setColumns(40);
-        descriptionArea.setRows(8);
-        MainFrame.setBasicInterface(descriptionArea);
-        taskFormPanel.add(descriptionArea, new GridBagConstraints(currentColumn--, currentRow++, 1, 1, 0, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
+                new Insets(0, 25, 0, 25), 0, 0));
     }
 
     public void initSubmitButton() {
@@ -227,67 +131,116 @@ public class TaskFormPanel extends JPanel {
                         .setStatus(TaskStatus.NOT_STARTED)
                         .setPriority(TaskPriority.getTaskPriority(priorityBox.getSelectedItem().toString()))
                         .setDeadline(dateTimePicker.getDateTimePermissive());
-                try {
-                    taskValidator.validateTask(taskToSave);
-                } catch (Exception exception) {
-                    System.out.println(taskToSave.getAuthor());
-                    System.out.println(taskToSave.getPerformer());
-                    System.out.println(exception.getMessage());
-                    JOptionPane.showMessageDialog(
-                            TaskFormPanel.this, exception.getMessage(),
-                            "Предупреждение", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-
                 if (currentTask == null) {
-                    try {
-                        contentLayeredPane.getMainFrame().getTaskMessageProducer().sendCreateTaskMessage(taskToSave);
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
-                    }
-                    clearTaskForm();
+                    contentLayeredPane.getMainFrame().getTaskMessageProducer().sendCreateTaskMessage(taskToSave);
                 } else {
                     taskToSave.setId(currentTask.getId());
-                    try {
-                        contentLayeredPane.getMainFrame().getTaskMessageProducer().sendUpdateTaskMessage(taskToSave);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
+                    contentLayeredPane.getMainFrame().getTaskMessageProducer().sendUpdateTaskMessage(taskToSave);
                 }
             }
         });
         add(submitButton, new GridBagConstraints(
                 0, 5, 1, 1, 0, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 50, 20));
+                new Insets(topMargin, leftMargin, bottomMargin, rightMargin), 50, 20));
     }
 
-    /**
-     * Заполнение формы данными редактируемой задачи
-     */
+    private void initTaskTitleRow() {
+        titleLabel = new JLabel("Заголовок:");
+        titleField = new JTextField();
+        titleField.setColumns(40);
+        titleField.setCaretColor(MainFrame.secondColor);
+        titleField.setHorizontalAlignment(SwingConstants.CENTER);
+        MainFrame.setBasicInterface(titleField);
+
+        formLines.put(titleLabel, titleField);
+    }
+
+    private void initPerformerRow() {
+        performerLabel = new JLabel("Исполнитель:");
+        performerBox = new JComboBox();
+        ((JLabel) performerBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
+        MainFrame.setBasicInterface(performerBox);
+
+
+        formLines.put(performerLabel, performerBox);
+    }
+
+    private void initPriorityRow() {
+        priorityLabel = new JLabel("Приоритет:");
+        priorityBox = new JComboBox();
+        ((JLabel) priorityBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
+        MainFrame.setBasicInterface(priorityBox);
+        for (TaskPriority priority : TaskPriority.values()) {
+            priorityBox.addItem(priority.getRuString());
+        }
+
+        formLines.put(priorityLabel, priorityBox);
+    }
+
+    private void initDeadlineRow() {
+        deadlineDateLabel = new JLabel("Дедлайн:");
+        dateTimePicker = new DateTimePicker();
+
+        dateTimePicker.getDatePicker().setBorder(MainFrame.border);
+        dateTimePicker.getDatePicker().getSettings().setFontValidDate(MainFrame.font);
+        dateTimePicker.getDatePicker().getSettings().setFontInvalidDate(MainFrame.font);
+        dateTimePicker.getDatePicker().getComponentDateTextField().setHorizontalAlignment(SwingConstants.CENTER);
+
+        dateTimePicker.getTimePicker().setBorder(MainFrame.border);
+        dateTimePicker.getTimePicker().getSettings().fontValidTime = MainFrame.font;
+        dateTimePicker.getTimePicker().getSettings().fontInvalidTime = MainFrame.font;
+        dateTimePicker.getTimePicker().getComponentTimeTextField().setHorizontalAlignment(SwingConstants.CENTER);
+
+        formLines.put(deadlineDateLabel, dateTimePicker);
+    }
+
+    private void initDescriptionRow() {
+        descriptionLabel = new JLabel("Описание:");
+        descriptionArea = new JTextArea();
+        descriptionArea.setColumns(40);
+        descriptionArea.setRows(8);
+        MainFrame.setBasicInterface(descriptionArea);
+
+        formLines.put(descriptionLabel, descriptionArea);
+    }
+
+    /** Заполнение формы данными редактируемой задачи */
     public void fillTaskForm(Task task) {
         titleField.setText(task.getTitle());
         User user = task.getPerformer();
         performerBox.setSelectedItem(user.getEmail() + " (" + user.getName() + " " + user.getSurname() + ")");
         priorityBox.setSelectedItem(task.getPriority().getRuString());
+        dateTimePicker.getDatePicker().setDate(task.getDeadline().toLocalDate());
+        dateTimePicker.getTimePicker().setTime(task.getDeadline().toLocalTime());
         descriptionArea.setText(task.getDescription());
     }
 
-    /**
-     * Очистка формы от данных
-     */
+    /** Очистка формы от данных */
     public void clearTaskForm() {
         titleField.setText("");
         performerBox.setSelectedItem(null);
         priorityBox.setSelectedItem(null);
+        dateTimePicker.getDatePicker().setDate(null);
+        dateTimePicker.getTimePicker().setTime(null);
         descriptionArea.setText("");
     }
 
+    /** Обновление списка пользователей в выпадающем списке для выбора исполнителя */
+    public void updatePerformerBoxItems(List<User> users) {
+        performerBox.removeAllItems();
+        for (User user : users) {
+            performerBox.addItem(user.getEmail() + " (" + user.getName() + " " + user.getSurname() + ")");
+        }
+    }
+
+    /** Изменение текста на панели для апдейта задачи */
     public void rewriteToUpdate() {
         pageTitleLabel.setText("ИЗМЕНЕНИЕ ЗАДАЧИ");
         submitButton.setText("СОХРАНИТЬ ИЗМЕНЕНИЯ");
     }
 
+    /** Изменение текста на панели для создания задачи */
     public void rewriteToCreate() {
         pageTitleLabel.setText("СОЗДАНИЕ ЗАДАЧИ");
         submitButton.setText("СОЗДАТЬ ЗАДАЧУ");

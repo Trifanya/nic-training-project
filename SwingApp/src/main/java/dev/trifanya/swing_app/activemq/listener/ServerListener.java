@@ -1,23 +1,21 @@
 package dev.trifanya.swing_app.activemq.listener;
 
+import dev.trifanya.swing_app.swing.MainFrame;
 import dev.trifanya.swing_app.activemq.handler.TaskMessageHandler;
 import dev.trifanya.swing_app.activemq.handler.UserMessageHandler;
-import dev.trifanya.swing_app.swing.MainFrame;
 
 import javax.jms.Message;
-import javax.jms.MessageListener;
+import javax.jms.JMSException;
 import javax.jms.TextMessage;
+import javax.jms.MessageListener;
 
 public class ServerListener implements MessageListener {
     private final TaskMessageHandler taskMessageHandler;
     private final UserMessageHandler userMessageHandler;
 
-    private final MainFrame mainFrame;
-
     public ServerListener(MainFrame mainFrame) {
         taskMessageHandler = new TaskMessageHandler(mainFrame);
         userMessageHandler = new UserMessageHandler(mainFrame);
-        this.mainFrame = mainFrame;
     }
 
     @Override
@@ -26,28 +24,32 @@ public class ServerListener implements MessageListener {
         try {
             String responseName = textMessage.getStringProperty("Response name");
             switch (responseName) {
-                case "Single task":
-                    taskMessageHandler.handleSingleTask(textMessage);
-                    break;
                 case "Task list":
-                    taskMessageHandler.handleTaskList(textMessage);
+                    taskMessageHandler.handleList(textMessage);
+                    break;
+                case "Task success":
+                    taskMessageHandler.handleSuccess(textMessage);
+                    break;
+                case "Task error":
+                    taskMessageHandler.handleError(textMessage);
                     break;
                 case "Authenticated user":
-                    userMessageHandler.handleAuthUser(textMessage);
-                    break;
-                case "Single user":
-                    userMessageHandler.handleSingleUser(textMessage);
+                    userMessageHandler.handleAuth(textMessage);
                     break;
                 case "User list":
-                    userMessageHandler.handleUserList(textMessage);
+                    userMessageHandler.handleList(textMessage);
                     break;
-                case "User created successfully":
-                    userMessageHandler.handleSuccessfulCreation(textMessage);
+                case "User success":
+                    userMessageHandler.handleSuccess(textMessage);
                     break;
-                case "Error":
+                case "User error":
+                    userMessageHandler.handleError(textMessage);
+                    break;
+                case "Wrong password":
+                    userMessageHandler.handleError(textMessage);
                     break;
             }
-        } catch (Exception exception) {
+        } catch (JMSException exception) {
             System.out.println("Server listener: Произошла ошибка при обработке сообщения.");
             exception.printStackTrace();
         }

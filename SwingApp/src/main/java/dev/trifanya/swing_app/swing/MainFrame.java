@@ -1,21 +1,25 @@
 package dev.trifanya.swing_app.swing;
 
+import dev.trifanya.server_app.model.Task;
+import dev.trifanya.server_app.model.User;
+import dev.trifanya.swing_app.swing.menu_panel.MenuPanel;
 import dev.trifanya.swing_app.activemq.producer.TaskMessageProducer;
 import dev.trifanya.swing_app.activemq.producer.UserMessageProducer;
 import dev.trifanya.swing_app.swing.content_panel.ContentLayeredPane;
-import dev.trifanya.swing_app.swing.menu_panel.MenuPanel;
 import dev.trifanya.swing_app.swing.sort_and_filters_panel.SortAndFiltersPanel;
-import lombok.Getter;
-import lombok.Setter;
 
-import javax.jms.JMSException;
+import lombok.Getter;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
-import java.awt.*;
+import javax.jms.JMSException;
+import java.util.List;
 
 @Getter
-@Setter
 public class MainFrame extends JFrame {
     public static int frameWidth = 1400;
     public static int frameHeight = 800;
@@ -41,25 +45,28 @@ public class MainFrame extends JFrame {
         getContentPane().setBackground(firstColor);
     }
 
-    public void init() throws JMSException {
-        taskMessageProducer = new TaskMessageProducer(this);
-        userMessageProducer = new UserMessageProducer(this);
+    public void init() throws JMSException, JsonProcessingException, InterruptedException {
+        taskMessageProducer = new TaskMessageProducer();
+        userMessageProducer = new UserMessageProducer();
 
         menuPanel = new MenuPanel(this);
         contentLayeredPane = new ContentLayeredPane(this);
         sortAndFiltersPanel = new SortAndFiltersPanel(this);
 
         menuPanel.init();
-        add(menuPanel, BorderLayout.WEST);
-
         contentLayeredPane.init();
-        add(contentLayeredPane, BorderLayout.CENTER);
-
         sortAndFiltersPanel.init(contentLayeredPane);
+
+        add(menuPanel, BorderLayout.WEST);
+        add(contentLayeredPane, BorderLayout.CENTER);
         add(sortAndFiltersPanel, BorderLayout.EAST);
+
         sortAndFiltersPanel.setContentVisibility(false);
 
         setVisible(true);
+
+        userMessageProducer.sendGetUserListMessage();
+        taskMessageProducer.sendGetTaskListMessage(sortAndFiltersPanel.getFilters());
     }
 
     public static void setBasicInterface(JComponent component) {
@@ -67,5 +74,37 @@ public class MainFrame extends JFrame {
         component.setForeground(secondColor);
         component.setFont(font);
         component.setBorder(border);
+    }
+
+    public void signIn(User user) {
+        menuPanel.changeLoginStatus();
+        contentLayeredPane.getCredentialsFormPanel().clearForm();
+        contentLayeredPane.getUserDetailsPanel().setCurrentUser(user);
+        contentLayeredPane.getUserDetailsPanel().fill();
+        contentLayeredPane.setCurrentPanel(contentLayeredPane.getUserDetailsPanel());
+    }
+
+    public void setUserList(List<User> users) {
+        contentLayeredPane.getUserListPanel().getUserTableModel().setUserList(users, contentLayeredPane);
+    }
+
+    public void setTaskList(List<Task> tasks) {
+        contentLayeredPane.getTaskListPanel().getTaskTableModel().setTaskList(tasks, contentLayeredPane);
+    }
+
+    public void updateUsers(String message) {
+        JOptionPane.showMessageDialog(contentLayeredPane, message);
+        contentLayeredPane.getUserFormPanel().clearUserForm();
+        taskMessageProducer.sendGetTaskListMessage(sortAndFiltersPanel.getFilters());
+    }
+
+    public void updateTasks(String message) {
+        JOptionPane.showMessageDialog(contentLayeredPane.getTaskFormPanel(), message);
+        contentLayeredPane.getTaskFormPanel().clearTaskForm();
+        taskMessageProducer.sendGetTaskListMessage(sortAndFiltersPanel.getFilters());
+    }
+
+    public void showWarning(String message) {
+        JOptionPane.showMessageDialog(contentLayeredPane, message, "Предупреждение", JOptionPane.WARNING_MESSAGE);
     }
 }

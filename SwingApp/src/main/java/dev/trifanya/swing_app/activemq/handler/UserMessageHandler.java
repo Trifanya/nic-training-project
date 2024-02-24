@@ -1,24 +1,25 @@
 package dev.trifanya.swing_app.activemq.handler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.trifanya.server_app.model.User;
 import dev.trifanya.swing_app.swing.MainFrame;
-import dev.trifanya.swing_app.swing.menu_panel.MenuPanel;
 
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
-import javax.swing.*;
-import java.util.ArrayList;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import java.util.List;
+import java.util.ArrayList;
+import javax.jms.TextMessage;
+import javax.jms.JMSException;
 
 public class UserMessageHandler {
-    private final ObjectMapper objectMapper;
     private final MainFrame mainFrame;
+    private final ObjectMapper objectMapper;
 
     public UserMessageHandler(MainFrame mainFrame) {
-        objectMapper = new ObjectMapper();
         this.mainFrame = mainFrame;
+        objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
     }
 
     /**
@@ -27,36 +28,41 @@ public class UserMessageHandler {
      * - Устанавливает текущего пользователя.
      * - Переключает интерфейс на панель с формой пользователя и заполняет ее данными текущего пользователя.
      */
-    public void handleAuthUser(TextMessage textMessage) throws JMSException, JsonProcessingException {
+    public void handleAuth(TextMessage textMessage) {
         System.out.println("Вызван метод handleAuthUser().");
-        User user = objectMapper.readValue(textMessage.getText(), User.class);
-        System.out.println(mainFrame.getContentLayeredPane());
-        mainFrame.getMenuPanel().changeLoginStatus();
-        mainFrame.getContentLayeredPane().getCredentialsFormPanel().clearForm();
-        mainFrame.getContentLayeredPane().getUserDetailsPanel().setCurrentUser(user);
-        mainFrame.getContentLayeredPane().getUserDetailsPanel().fill();
-        mainFrame.getContentLayeredPane().setCurrentPanel(mainFrame.getContentLayeredPane().getUserDetailsPanel());
+        try {
+            User user = objectMapper.readValue(textMessage.getText(), User.class);
+            mainFrame.signIn(user);
+        } catch (JMSException | JsonProcessingException exception) {
+            System.out.println("UserMessageHandler: Произошла ошибка при обработке сообщения в методе handleAuth()");
+        }
     }
 
-    public void handleSingleUser(TextMessage textMessage) throws JMSException, JsonProcessingException {
-        System.out.println("Вызван метод handleSingleUser().");
-        User user = objectMapper.readValue(textMessage.getText(), User.class);
-        mainFrame.getContentLayeredPane().getUserDetailsPanel().fill(user);
-        mainFrame.getContentLayeredPane().setCurrentPanel(mainFrame.getContentLayeredPane().getUserDetailsPanel());
-    }
-
-    public void handleUserList(TextMessage textMessage) throws JMSException, JsonProcessingException {
+    public void handleList(TextMessage textMessage) {
         System.out.println("Вызван метод handleUserList().");
-        List<User> users = objectMapper.readValue(textMessage.getText(), ArrayList.class);
-        mainFrame.getContentLayeredPane().setCurrentPanel(mainFrame.getContentLayeredPane().getUserListPanel());
+        try {
+            List<User> users = objectMapper.readValue(textMessage.getText(), new TypeReference<ArrayList<User>>() {});
+            mainFrame.setUserList(users);
+        } catch (JsonProcessingException | JMSException exception) {
+            System.out.println("UserMessageHandler: Произошла ошибка при обработке сообщения в методе handleList()");
+        }
     }
 
-    public void handleSuccessfulCreation(TextMessage textMessage) throws JMSException {
+    public void handleSuccess(TextMessage textMessage) {
         System.out.println("Вызван метод handleSuccess() в UserMessageHandler.");
-        JOptionPane.showMessageDialog(mainFrame.getContentLayeredPane().getUserFormPanel(), textMessage.getText());
+        try {
+            mainFrame.updateUsers(textMessage.getText());
+        } catch (JMSException exception) {
+            System.out.println("UserMessageHandler: Произошла ошибка при обработке сообщения в методе handleSuccess()");
+        }
     }
 
     public void handleError(TextMessage textMessage) {
         System.out.println("Вызван метод handleError() в UserMessageHandler.");
+        try {
+            mainFrame.showWarning(textMessage.getText());
+        } catch (JMSException exception) {
+            System.out.println("UserMessageHandler: Произошла ошибка при обработке сообщения в методе handleError()");
+        }
     }
 }

@@ -1,19 +1,15 @@
 package dev.trifanya.swing_app.swing.content_panel.user.user_list;
 
-import lombok.Getter;
-import lombok.Setter;
 import dev.trifanya.server_app.model.User;
+import dev.trifanya.swing_app.swing.content_panel.ContentLayeredPane;
 
-import javax.swing.table.AbstractTableModel;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.ArrayList;
+import javax.swing.table.AbstractTableModel;
 
-@Getter
-@Setter
 public class UserTableModel extends AbstractTableModel {
-    private int columnCount = 5;
-    private List<String[]> tableData = new ArrayList<>();
+    private final int columnCount = 5;
+    private final List<String[]> tableData = new ArrayList<>();
     private List<User> userList = new ArrayList<>();
 
     @Override
@@ -43,7 +39,7 @@ public class UserTableModel extends AbstractTableModel {
         }
     }
 
-    public void fillTable(Map<String, String> filters, String sortByColumn, String sortDir) {
+    public void fillTable() {
         tableData.clear();
 
         for (User user : userList) {
@@ -53,7 +49,6 @@ public class UserTableModel extends AbstractTableModel {
             row[2] = user.getSurname();
             row[3] = user.getPosition();
             row[4] = user.getEmail();
-
             tableData.add(row);
         }
     }
@@ -65,5 +60,11 @@ public class UserTableModel extends AbstractTableModel {
             }
         }
         return null;
+    }
+
+    public void setUserList(List<User> userList, ContentLayeredPane contentLayeredPane) {
+        this.userList = userList;
+        fillTable();
+        contentLayeredPane.getTaskFormPanel().updatePerformerBoxItems(userList);
     }
 }

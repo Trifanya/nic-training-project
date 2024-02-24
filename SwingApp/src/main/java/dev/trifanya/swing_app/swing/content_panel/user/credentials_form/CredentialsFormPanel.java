@@ -1,43 +1,38 @@
 package dev.trifanya.swing_app.swing.content_panel.user.credentials_form;
 
-import dev.trifanya.server_app.model.User;
-import dev.trifanya.server_app.service.UserService;
 import dev.trifanya.swing_app.swing.MainFrame;
 import dev.trifanya.swing_app.swing.content_panel.ContentLayeredPane;
 
-import javax.jms.JMSException;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class CredentialsFormPanel extends JPanel {
+    private final ContentLayeredPane contentLayeredPane;
+
+    private JLabel pageTitleLabel;
+    private JPanel formPanel;
+    private JButton submitButton;
+
+    private JLabel emailLabel;
+    private JLabel passwordLabel;
+
+    private JTextField emailField;
+    private JPasswordField passwordField;
+
+    private final Map<JLabel, JTextField> formLines = new LinkedHashMap<>();
+
     private final int leftMargin = 25;
     private final int rightMargin = 25;
     private final int topMargin = 25;
     private final int bottomMargin = 25;
 
-    private int currentRow = 0;
-    private int currentColumn = 0;
-
-    private int ipadx = 20;
+    private int ipadx = 10;
     private int ipady = 20;
-
-    private final int labelHorizontalAlignment = SwingConstants.LEFT;
-
-    private ContentLayeredPane contentLayeredPane;
-
-    private JLabel pageTitleLabel;
-    private JPanel formPanel;
-
-    private JLabel emailLabel;
-    private JTextField emailField;
-
-    private JLabel passwordLabel;
-    private JPasswordField passwordField;
-
-    private JButton submitButton;
 
     public CredentialsFormPanel(ContentLayeredPane contentLayeredPane) {
         this.contentLayeredPane = contentLayeredPane;
@@ -50,9 +45,34 @@ public class CredentialsFormPanel extends JPanel {
     public void init() {
         initPageTitleLabel();
         initFormPanel();
-        initEmailRow();
-        initPasswordRow();
         initSubmitButton();
+
+        emailLabel = new JLabel("Email:");
+        passwordLabel = new JLabel("Пароль:");
+
+        emailField = new JTextField("");
+        passwordField = new JPasswordField("");
+
+        formLines.put(emailLabel, emailField);
+        formLines.put(passwordLabel, passwordField);
+
+        int currentRow = 0;
+        int currentColumn = 0;
+        for (Map.Entry<JLabel, JTextField> formLine : formLines.entrySet()) {
+            MainFrame.setBasicInterface(formLine.getKey());
+            formLine.getKey().setBorder(null);
+            formLine.getKey().setHorizontalAlignment(SwingConstants.LEFT);
+            formPanel.add(formLine.getKey(), new GridBagConstraints(currentColumn++, currentRow, 1, 1, 0, 0,
+                    GridBagConstraints.EAST, GridBagConstraints.NONE,
+                    new Insets(0, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
+            formLine.getValue().setColumns(30);
+            MainFrame.setBasicInterface(formLine.getValue());
+            formLine.getValue().setHorizontalAlignment(SwingConstants.CENTER);
+            formPanel.add(formLine.getValue(), new GridBagConstraints(
+                    currentColumn--, currentRow++, 2, 1, 1, 0,
+                    GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
+                    new Insets(0, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
+        }
     }
 
     public void initPageTitleLabel() {
@@ -73,44 +93,6 @@ public class CredentialsFormPanel extends JPanel {
                 0, 1, 1, 1, 1, 1,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, leftMargin, bottomMargin, rightMargin), 0, 0));
-
-    }
-
-    private void initEmailRow() {
-        emailLabel = new JLabel("Email:");
-        MainFrame.setBasicInterface(emailLabel);
-        emailLabel.setBorder(null);
-        emailLabel.setHorizontalAlignment(labelHorizontalAlignment);
-        formPanel.add(emailLabel, new GridBagConstraints(currentColumn++, currentRow, 1, 1, 0, 0,
-                GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
-
-        emailField = new JTextField("");
-        emailField.setColumns(30);
-        MainFrame.setBasicInterface(emailField);
-        emailField.setHorizontalAlignment(SwingConstants.CENTER);
-        formPanel.add(emailField, new GridBagConstraints(currentColumn--, currentRow++, 2, 1, 1, 0,
-                GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
-    }
-
-    private void initPasswordRow() {
-        passwordLabel = new JLabel("Пароль:");
-        MainFrame.setBasicInterface(passwordLabel);
-        passwordLabel.setBorder(null);
-        passwordLabel.setHorizontalAlignment(labelHorizontalAlignment);
-        formPanel.add(passwordLabel, new GridBagConstraints(currentColumn++, currentRow, 1, 1, 0, 0,
-                GridBagConstraints.EAST, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
-
-        passwordField = new JPasswordField("");
-        passwordField.setColumns(30);
-        MainFrame.setBasicInterface(passwordField);
-        passwordField.setHorizontalAlignment(SwingConstants.CENTER);
-        formPanel.add(passwordField, new GridBagConstraints(
-                currentColumn--, currentRow++, 2, 1, 1, 0,
-                GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), ipadx, ipady));
     }
 
     public void initSubmitButton() {
@@ -120,12 +102,8 @@ public class CredentialsFormPanel extends JPanel {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
                     contentLayeredPane.getMainFrame().getUserMessageProducer()
                             .sendSignInMessage(emailField.getText(), passwordField.getText());
-                } catch (JMSException ex) {
-                    throw new RuntimeException(ex);
-                }
             }
         });
         add(submitButton, new GridBagConstraints(
@@ -138,6 +116,4 @@ public class CredentialsFormPanel extends JPanel {
         emailField.setText("");
         passwordField.setText("");
     }
-
-
 }

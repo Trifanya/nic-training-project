@@ -1,0 +1,17 @@
+[Unit]
+Description=NIC training project, Swing CRUD Application
+After=syslog.target network.target
+
+[Service]
+WorkingDirectory=/home/trifanya/Java/NIC/training-project/crudapp/deb
+SuccessExitStatus=143
+ExecStart=/home/trifanya/Java/NIC/training-project/crudapp/deb/bin/nictp_crudapp.sh
+ExecStop=/bin/kill -15 $MAINPID
+
+Type=forking
+
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
