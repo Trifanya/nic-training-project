@@ -1,0 +1,17 @@
+[Unit]
+Description=NIC training project, CRUD Server Application
+After=syslog.target network.target
+
+[Service]
+WorkingDirectory=/home/trifanya/Java/NICTP/crudapp/deb
+SuccessExitStatus=143
+ExecStart=/home/trifanya/Java/NICTP/crudapp/deb/bin/nictp_crud_server.sh
+ExecStop=/bin/kill -15 $MAINPID
+
+Type=forking
+
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

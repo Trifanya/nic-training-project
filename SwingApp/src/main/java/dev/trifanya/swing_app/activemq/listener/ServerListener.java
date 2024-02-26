@@ -1,8 +1,10 @@
 package dev.trifanya.swing_app.activemq.listener;
 
+import dev.trifanya.swing_app.SwingClientApp;
 import dev.trifanya.swing_app.swing.MainFrame;
 import dev.trifanya.swing_app.activemq.handler.TaskMessageHandler;
 import dev.trifanya.swing_app.activemq.handler.UserMessageHandler;
+import org.apache.logging.log4j.Logger;
 
 import javax.jms.Message;
 import javax.jms.JMSException;
@@ -10,6 +12,7 @@ import javax.jms.TextMessage;
 import javax.jms.MessageListener;
 
 public class ServerListener implements MessageListener {
+    private static final Logger logger = SwingClientApp.logger;
     private final TaskMessageHandler taskMessageHandler;
     private final UserMessageHandler userMessageHandler;
 
@@ -20,9 +23,13 @@ public class ServerListener implements MessageListener {
 
     @Override
     public void onMessage(Message message) {
+        logger.trace("ServerListener: Вызван метод onMessage()");
+
         TextMessage textMessage = (TextMessage) message;
         try {
             String responseName = textMessage.getStringProperty("Response name");
+            logger.trace("ServerListener: Response name: \"" + responseName + "\"");
+
             switch (responseName) {
                 case "Task list":
                     taskMessageHandler.handleList(textMessage);
@@ -50,7 +57,7 @@ public class ServerListener implements MessageListener {
                     break;
             }
         } catch (JMSException exception) {
-            System.out.println("Server listener: Произошла ошибка при обработке сообщения.");
+            logger.error("Server listener: Произошла ошибка при обработке сообщения.");
             exception.printStackTrace();
         }
     }

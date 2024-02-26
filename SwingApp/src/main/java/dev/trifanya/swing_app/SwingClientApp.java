@@ -6,6 +6,8 @@ import dev.trifanya.swing_app.activemq.listener.ServerListener;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.jms.*;
 import java.util.Properties;
@@ -14,6 +16,8 @@ import static javax.jms.Session.AUTO_ACKNOWLEDGE;
 import static org.apache.activemq.ActiveMQConnection.DEFAULT_BROKER_URL;
 
 public class SwingClientApp {
+    public static final Logger logger = LogManager.getLogger();
+
     public static final Properties properties = PropertiesLoader.loadProperties("application.properties");
 
     public static final String CLIENT_ID = properties.getProperty("activemqClientId");
@@ -26,12 +30,14 @@ public class SwingClientApp {
     public static void main(String[] args) throws JMSException, JsonProcessingException, InterruptedException {
         MainFrame mainFrame = new MainFrame();
 
-        System.out.println("Устанавливается соединение с сервером ActiveMQ...");
+        logger.info("Устанавливается соединение с сервером ActiveMQ...");
 
         connectionFactory = new ActiveMQConnectionFactory(DEFAULT_BROKER_URL);
         connection = connectionFactory.createConnection();
         connection.setClientID(CLIENT_ID);
         connection.start();
+
+        logger.info("Соединение с сервером ActiveMQ установлено.");
 
         Session session = connection.createSession(false, AUTO_ACKNOWLEDGE);
         Destination destination = session.createQueue(RESPONSE_FROM_SERVER_QUEUE);

@@ -5,6 +5,7 @@ import dev.trifanya.swing_app.SwingClientApp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.logging.log4j.Logger;
 
 import javax.jms.*;
 import java.util.Map;
@@ -13,6 +14,8 @@ import java.util.HashMap;
 import static javax.jms.Session.AUTO_ACKNOWLEDGE;
 
 public class TaskMessageProducer {
+    private static final Logger logger = SwingClientApp.logger;
+
     private final Session session;
     private final Destination destination;
     private final MessageProducer producer;
@@ -27,7 +30,7 @@ public class TaskMessageProducer {
     }
 
     public void sendGetTaskListMessage(Map<String, String> requestParams) {
-        System.out.println("Вызван метод sendGetTaskListMessage().");
+        logger.trace("TaskMessageProducer: Вызван метод sendGetTaskListMessage().");
         try {
             Map<String, String> notNullParams = new HashMap<>();
             for (Map.Entry<String, String> param : requestParams.entrySet()) {
@@ -39,44 +42,48 @@ public class TaskMessageProducer {
             TextMessage message = session.createTextMessage(messageToSend);
             message.setStringProperty("Request name", "Get task list");
             producer.send(destination, message);
+            logger.info("Сообщение успешно отправлено.");
         } catch (JMSException | JsonProcessingException exception) {
-            System.out.println("TaskMessageProducer: Произошла ошибка при отправке сообщения в методе sendGetTaskListMessage().");
+            logger.error("TaskMessageProducer: Произошла ошибка при отправке сообщения.");
         }
     }
 
     public void sendCreateTaskMessage(Task taskToSave) {
-        System.out.println("Вызван метод sendCreateTaskMessage().");
+        logger.trace("TaskMessageProducer: Вызван метод sendCreateTaskMessage().");
         try {
             String messageToSend = objectMapper.writeValueAsString(taskToSave);
             TextMessage message = session.createTextMessage(messageToSend);
             message.setStringProperty("Request name", "Create task");
             producer.send(destination, message);
+            logger.info("Сообщение успешно отправлено.");
         } catch (JMSException | JsonProcessingException exception) {
-            System.out.println("TaskMessageProducer: Произошла ошибка при отправке сообщения в методе sendCreateTaskMessage().");
+            logger.error("TaskMessageProducer: Произошла ошибка при отправке сообщения.");
         }
     }
 
     public void sendUpdateTaskMessage(Task updatedTask) {
-        System.out.println("Вызван метод sendUpdateTaskMessage().");
+        logger.trace("TaskMessageProducer: Вызван метод sendUpdateTaskMessage().");
         try {
             String messageToSend = objectMapper.writeValueAsString(updatedTask);
             TextMessage message = session.createTextMessage(messageToSend);
             message.setStringProperty("Request name", "Update task");
             producer.send(destination, message);
+            logger.info("Сообщение успешно отправлено.");
         } catch (JMSException | JsonProcessingException exception) {
-            System.out.println("TaskMessageProducer: Произошла ошибка при отправке сообщения в методе sendUpdateTaskMessage().");
+            logger.error("TaskMessageProducer: Произошла ошибка при отправке сообщения.");
         }
     }
 
     public void sendDeleteTaskMessage(int taskToDeleteId) {
-        System.out.println("Вызван метод sendDeleteTaskMessage().");
+        logger.trace("TaskMessageProducer: Вызван метод sendDeleteTaskMessage().");
         try {
             String messageToSend = objectMapper.writeValueAsString(taskToDeleteId);
             TextMessage message = session.createTextMessage(messageToSend);
             message.setStringProperty("Request name", "Delete task");
             producer.send(destination, message);
+            logger.info("Сообщение успешно отправлено.");
         } catch (JMSException | JsonProcessingException exception) {
-            System.out.println("TaskMessageProducer: Произошла ошибка при отправке сообщения в методе sendDeleteTaskMessage().");
+            logger.error("TaskMessageProducer: Произошла ошибка при отправке сообщения.");
         }
     }
 }

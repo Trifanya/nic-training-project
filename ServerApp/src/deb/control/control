@@ -6,6 +6,6 @@ Architecture: all
 Depends: jdk (>= 1.8)
 Build-Depends: debhelper, dh-systemd(>=1.5)
 Maintainer: Trifanya (trifanya.dev@gmail.com)
-Description: Debian package with swing CRUD application
+Description: Debian package with CRUD server application
 Distribution: development
 Depends: default-jre | java8-runtime

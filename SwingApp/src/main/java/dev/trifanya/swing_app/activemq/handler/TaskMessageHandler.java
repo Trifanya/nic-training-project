@@ -1,8 +1,10 @@
 package dev.trifanya.swing_app.activemq.handler;
 
 import dev.trifanya.server_app.model.Task;
+import dev.trifanya.swing_app.SwingClientApp;
 import dev.trifanya.swing_app.swing.MainFrame;
 
+import org.apache.logging.log4j.Logger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,6 +15,8 @@ import javax.jms.TextMessage;
 import javax.jms.JMSException;
 
 public class TaskMessageHandler {
+    private static final Logger logger = SwingClientApp.logger;
+
     private final MainFrame mainFrame;
     private final ObjectMapper objectMapper;
 
@@ -23,30 +27,30 @@ public class TaskMessageHandler {
     }
 
     public void handleList(TextMessage textMessage) {
-        System.out.println("Вызван метод handleTaskList().");
+        logger.trace("TaskMessageHandler: Вызван метод handleTaskList().");
         try {
             List<Task> tasks = objectMapper.readValue(textMessage.getText(), new TypeReference<ArrayList<Task>>() {});
             mainFrame.setTaskList(tasks);
         } catch (JsonProcessingException | JMSException exception) {
-            System.out.println("TaskMessageHandler: Произошла ошибка при обработке сообщения в методе handleList()");
+            logger.error("TaskMessageHandler: Произошла ошибка при обработке сообщения.");
         }
     }
 
     public void handleSuccess(TextMessage textMessage) {
-        System.out.println("Вызван метод handleSuccess() в TaskMessageHandler.");
+        logger.trace("TaskMessageHandler: Вызван метод handleSuccess().");
         try {
             mainFrame.updateTasks(textMessage.getText());
         } catch (JMSException exception) {
-            System.out.println("TaskMessageHandler: Произошла ошибка при обработке сообщения в методе handleSuccess()");
+            logger.error("TaskMessageHandler: Произошла ошибка при обработке сообщения.");
         }
     }
 
     public void handleError(TextMessage textMessage) {
-        System.out.println("Вызван метод handleError() в TaskMessageHandler.");
+        logger.trace("TaskMessageHandler: Вызван метод handleError().");
         try {
             mainFrame.showWarning(textMessage.getText());
         } catch (JMSException exception) {
-            System.out.println("TaskMessageHandler: Произошла ошибка при обработке сообщения в методе handleError()");
+            logger.error("TaskMessageHandler: Произошла ошибка при обработке сообщения.");
         }
     }
 }

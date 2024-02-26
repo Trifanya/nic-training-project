@@ -1,11 +1,15 @@
-package dev.trifanya.server_app.activemq.consumer;
+package dev.trifanya.server_app.activemq.listener;
 
+import dev.trifanya.server_app.ServerApp;
 import dev.trifanya.server_app.activemq.handler.TaskMessageHandler;
 import dev.trifanya.server_app.activemq.handler.UserMessageHandler;
+import org.apache.logging.log4j.Logger;
 
 import javax.jms.*;
 
 public class ClientListener implements MessageListener {
+    private final Logger logger = ServerApp.logger;
+
     private final TaskMessageHandler taskMessageHandler;
     private final UserMessageHandler userMessageHandler;
     private Destination destination;
@@ -22,6 +26,7 @@ public class ClientListener implements MessageListener {
 
     @Override
     public void onMessage(Message message) {
+        logger.trace("ClientListener: Вызван метод onMessage().");
         TextMessage textMessage = (TextMessage) message;
         try {
             Destination responseDestination;
@@ -30,8 +35,11 @@ public class ClientListener implements MessageListener {
             } else {
                 responseDestination = destination;
             }
+            logger.trace("ClientListener: Response destination: " + responseDestination);
 
             String requestName = textMessage.getStringProperty("Request name");
+            logger.trace("ClientListener: Request name: \"" + requestName + "\"");
+
             switch (requestName) {
                 case "Get single task":
                     taskMessageHandler.handleGetSingleTask(responseDestination, textMessage); break;
@@ -57,7 +65,7 @@ public class ClientListener implements MessageListener {
                     userMessageHandler.handleDeleteUser(responseDestination, textMessage); break;
             }
         } catch (JMSException exception) {
-            System.out.println("ClientListener: Произошла ошибка при первичной обработке сообщения.");
+            logger.error("ClientListener: Произошла ошибка при первичной обработке сообщения.");
             exception.printStackTrace();
         }
     }
