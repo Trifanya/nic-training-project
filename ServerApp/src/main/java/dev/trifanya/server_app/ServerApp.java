@@ -13,7 +13,7 @@ import static javax.jms.Session.AUTO_ACKNOWLEDGE;
 import static org.apache.activemq.ActiveMQConnection.DEFAULT_BROKER_URL;
 
 public class ServerApp {
-    public static final Logger logger = LogManager.getLogger();
+    public static final Logger logger = LogManager.getLogger(ServerApp.class);
     public static final Properties properties = PropertiesLoader.loadProperties("application.properties");
 
     public static final String CLIENT_ID = properties.getProperty("activemqClientId");
@@ -36,8 +36,8 @@ public class ServerApp {
 
         Session session = ServerApp.connection.createSession(false, AUTO_ACKNOWLEDGE);
 
-        Destination destinationWeb = session.createQueue(REQUEST_FROM_WEB_CLIENT_QUEUE);
-        MessageConsumer webClientConsumer = session.createConsumer(destinationWeb);
+        Destination destinationFromWeb = session.createQueue(REQUEST_FROM_WEB_CLIENT_QUEUE);
+        MessageConsumer webClientConsumer = session.createConsumer(destinationFromWeb);
         webClientConsumer.setMessageListener(new ClientListener());
 
         Destination destinationFromSwing = session.createQueue(REQUEST_FROM_SWING_CLIENT_QUEUE);

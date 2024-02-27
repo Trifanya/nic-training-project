@@ -4,6 +4,7 @@ import dev.trifanya.swing_app.SwingClientApp;
 import dev.trifanya.swing_app.swing.MainFrame;
 import dev.trifanya.swing_app.activemq.handler.TaskMessageHandler;
 import dev.trifanya.swing_app.activemq.handler.UserMessageHandler;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.jms.Message;
@@ -12,7 +13,7 @@ import javax.jms.TextMessage;
 import javax.jms.MessageListener;
 
 public class ServerListener implements MessageListener {
-    private static final Logger logger = SwingClientApp.logger;
+    private static final Logger logger = LogManager.getLogger(ServerListener.class);
     private final TaskMessageHandler taskMessageHandler;
     private final UserMessageHandler userMessageHandler;
 
@@ -23,12 +24,12 @@ public class ServerListener implements MessageListener {
 
     @Override
     public void onMessage(Message message) {
-        logger.trace("ServerListener: Вызван метод onMessage()");
+        logger.trace("Вызван метод onMessage()");
 
         TextMessage textMessage = (TextMessage) message;
         try {
             String responseName = textMessage.getStringProperty("Response name");
-            logger.trace("ServerListener: Response name: \"" + responseName + "\"");
+            logger.trace("Response name: \"" + responseName + "\"");
 
             switch (responseName) {
                 case "Task list":

@@ -5,6 +5,7 @@ import dev.trifanya.server_app.ServerApp;
 import dev.trifanya.server_app.model.Task;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.jms.*;
@@ -13,69 +14,61 @@ import java.util.List;
 import static javax.jms.Session.AUTO_ACKNOWLEDGE;
 
 public class TaskMessageProducer {
-    private static final Logger logger = ServerApp.logger;
-    private final Session session;
-    private final ObjectMapper objectMapper;
+    private static final Logger logger = LogManager.getLogger(TaskMessageProducer.class);
+    private Session session;
+    private ObjectMapper objectMapper;
 
     private MessageProducer producer;
 
-    public TaskMessageProducer() throws JMSException {
-        session = ServerApp.connection.createSession(false, AUTO_ACKNOWLEDGE);
-        objectMapper = new ObjectMapper();
-        objectMapper.findAndRegisterModules();
-    }
-
-    public void sendTask(Destination responseDestination, Task taskToSend) {
-        logger.trace("TaskMessageProducer: Вызван метод sendTask().");
+    public TaskMessageProducer() {
         try {
-            String messageToSend = objectMapper.writeValueAsString(taskToSend);
-            TextMessage message = session.createTextMessage(messageToSend);
-            message.setStringProperty("Response name", "Single task");
-            producer = session.createProducer(responseDestination);
-            producer.send(message);
-            logger.trace("TaskMessageProducer: Сообщение успешно отправлено.");
-        } catch (JMSException | JsonProcessingException exception) {
-            logger.error("TaskMessageHandler: Произошла ошибка при отправке сообщения.");
-        }
-    }
-
-    public void sendTaskList(Destination responseDestination, List<Task> taskListToSend) {
-        logger.trace("TaskMessageProducer: Вызван метод sendTaskList().");
-        try {
-            String messageToSend = objectMapper.writeValueAsString(taskListToSend);
-            TextMessage message = session.createTextMessage(messageToSend);
-            message.setStringProperty("Response name", "Task list");
-            producer = session.createProducer(responseDestination);
-            producer.send(message);
-            logger.trace("TaskMessageProducer: Сообщение успешно отправлено.");
-        } catch (JMSException | JsonProcessingException exception) {
-            logger.error("TaskMessageHandler: Произошла ошибка при отправке сообщения.");
-        }
-    }
-
-    public void sendSuccessMessage(Destination responseDestination, String msg) {
-        logger.trace("TaskMessageProducer: Вызван метод sendSuccessMessage().");
-        try {
-            TextMessage message = session.createTextMessage(msg);
-            message.setStringProperty("Response name", "Task success");
-            producer = session.createProducer(responseDestination);
-            producer.send(message);
-            logger.trace("TaskMessageProducer: Сообщение успешно отправлено.");
+            session = ServerApp.connection.createSession(false, AUTO_ACKNOWLEDGE);
+            objectMapper = new ObjectMapper();
+            objectMapper.findAndRegisterModules();
         } catch (JMSException exception) {
-            logger.error("TaskMessageHandler: Произошла ошибка при отправке сообщения.");
+            logger.error("Произошла ошибка при создании сессии для работы c сервером ActiveMQ.", exception);
         }
+    }
+
+    public void sendTask(Destination responseDestination, Task taskToSend) throws JsonProcessingException, JMSException {
+        logger.trace("Вызван метод sendTask().");
+        String messageToSend = objectMapper.writeValueAsString(taskToSend);
+        TextMessage message = session.createTextMessage(messageToSend);
+        message.setStringProperty("Response name", "Single task");
+        producer = session.createProducer(responseDestination);
+        producer.send(message);
+        logger.trace("Сообщение успешно отправлено.");
+    }
+
+    public void sendTaskList(Destination responseDestination, List<Task> taskListToSend) throws JsonProcessingException, JMSException {
+        logger.trace("Вызван метод sendTaskList().");
+        String messageToSend = objectMapper.writeValueAsString(taskListToSend);
+        TextMessage message = session.createTextMessage(messageToSend);
+        message.setStringProperty("Response name", "Task list");
+        producer = session.createProducer(responseDestination);
+        producer.send(message);
+        logger.trace("Сообщение успешно отправлено.");
+    }
+
+    public void sendSuccessMessage(Destination responseDestination, String msg) throws JMSException {
+        logger.trace("Вызван метод sendSuccessMessage().");
+        TextMessage message = session.createTextMessage(msg);
+        message.setStringProperty("Response name", "Task success");
+        producer = session.createProducer(responseDestination);
+        producer.send(message);
+        logger.trace("Сообщение успешно отправлено.");
     }
 
     public void sendErrorMessage(Destination responseDestination, String msg) {
-        logger.trace("TaskMessageProducer: Вызван метод sendErrorMessage().");
+        logger.trace("Вызван метод sendErrorMessage().");
         try {
             TextMessage message = session.createTextMessage(msg);
             message.setStringProperty("Response name", "Task error");
             producer = session.createProducer(responseDestination);
             producer.send(message);
-            logger.trace("TaskMessageProducer: Сообщение успешно отправлено.");
+            logger.trace("Сообщение успешно отправлено.");
         } catch (JMSException exception) {
-            logger.error("TaskMessageHandler: Произошла ошибка при отправке сообщения.");
+            logger.error("Не удалось отправить клиенту сообщение об ошибке.", exception);
         }
     }
 }

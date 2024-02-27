@@ -16,7 +16,7 @@ import static javax.jms.Session.AUTO_ACKNOWLEDGE;
 import static org.apache.activemq.ActiveMQConnection.DEFAULT_BROKER_URL;
 
 public class SwingClientApp {
-    public static final Logger logger = LogManager.getLogger();
+    public static final Logger logger = LogManager.getLogger(SwingClientApp.class);
 
     public static final Properties properties = PropertiesLoader.loadProperties("application.properties");
 

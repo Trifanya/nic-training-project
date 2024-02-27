@@ -1,44 +1,43 @@
 package dev.trifanya.server_app.activemq.listener;
 
-import dev.trifanya.server_app.ServerApp;
 import dev.trifanya.server_app.activemq.handler.TaskMessageHandler;
 import dev.trifanya.server_app.activemq.handler.UserMessageHandler;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.jms.*;
 
 public class ClientListener implements MessageListener {
-    private final Logger logger = ServerApp.logger;
+    private static final Logger logger = LogManager.getLogger(ClientListener.class);
 
     private final TaskMessageHandler taskMessageHandler;
     private final UserMessageHandler userMessageHandler;
+
     private Destination destination;
 
-    public ClientListener() throws JMSException {
+    public ClientListener() {
         this.taskMessageHandler = new TaskMessageHandler();
         this.userMessageHandler = new UserMessageHandler();
     }
 
-    public ClientListener(Destination destination)throws JMSException  {
+    public ClientListener(Destination destination) {
         this();
         this.destination = destination;
     }
 
     @Override
     public void onMessage(Message message) {
-        logger.trace("ClientListener: Вызван метод onMessage().");
+        logger.trace("Вызван метод onMessage().");
         TextMessage textMessage = (TextMessage) message;
         try {
-            Destination responseDestination;
+            Destination responseDestination = destination;
             if (destination == null) {
                 responseDestination = message.getJMSReplyTo();
-            } else {
-                responseDestination = destination;
             }
-            logger.trace("ClientListener: Response destination: " + responseDestination);
+            logger.trace("Response destination: " + responseDestination);
 
             String requestName = textMessage.getStringProperty("Request name");
-            logger.trace("ClientListener: Request name: \"" + requestName + "\"");
+            logger.trace("Request name: \"" + requestName + "\"");
 
             switch (requestName) {
                 case "Get single task":
@@ -65,8 +64,7 @@ public class ClientListener implements MessageListener {
                     userMessageHandler.handleDeleteUser(responseDestination, textMessage); break;
             }
         } catch (JMSException exception) {
-            logger.error("ClientListener: Произошла ошибка при первичной обработке сообщения.");
-            exception.printStackTrace();
+            logger.error("Произошла ошибка при первичной обработке сообщения.", exception);
         }
     }
 }

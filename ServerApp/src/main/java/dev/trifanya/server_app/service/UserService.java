@@ -1,110 +1,67 @@
 package dev.trifanya.server_app.service;
 
-import dev.trifanya.server_app.ServerApp;
-import dev.trifanya.server_app.model.User;
-import dev.trifanya.server_app.mybatis.mapper.UserMapper;
 import dev.trifanya.server_app.exception.NotFoundException;
+import dev.trifanya.server_app.model.User;
 import dev.trifanya.server_app.mybatis.criteria_builder.UserFiltersBuilder;
 
-import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import dev.trifanya.server_app.repository.UserRepository;
+import dev.trifanya.server_app.validator.UserValidator;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 import java.util.Map;
 import java.util.List;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.io.IOException;
 
 public class UserService {
-    private static final Logger logger = ServerApp.logger;
+    private static final Logger logger = LogManager.getLogger(UserService.class);
+    private static final String NOT_FOUND_BY_ID_MSG = "Пользователь с указанным ID не найден.";
+    private static final String NOT_FOUND_BY_EMAIL_MSG = "Пользователь с указанным email не найден.";
 
-    private final String NOT_FOUND_BY_ID_MSG = "Пользователь с указанным ID не найден.";
-    private final String NOT_FOUND_BY_EMAIL_MSG = "Пользователь с указанным email не найден.";
-
-    private UserMapper userMapper;
-    private SqlSessionFactory sessionFactory;
+    private final UserValidator userValidator;
+    private final UserRepository userRepository;
 
     public UserService() {
-        try (Reader reader = Resources.getResourceAsReader("mybatis.xml")) {
-            sessionFactory = new SqlSessionFactoryBuilder().build(reader);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        userValidator = new UserValidator();
+        userRepository = new UserRepository();
     }
 
     public User getUserById(int userId) {
-        logger.trace("UserService: Вызван метод getUserById().");
-        try (SqlSession session = sessionFactory.openSession(true)) {
-            userMapper = session.getMapper(UserMapper.class);
-            return userMapper.findUserById(userId)
-                    .orElseThrow(() -> new NotFoundException(NOT_FOUND_BY_ID_MSG));
-        } catch (Exception e) {
-            logger.error("UserService: Произошла ошибка при попытке получить пользователя из БД по id.");
-            e.printStackTrace();
-            return null;
-        }
+        logger.trace("Вызван метод getUserById().");
+        return userRepository.getUserById(userId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_BY_ID_MSG));
     }
 
     public User getUserByEmail(String userEmail) {
-        logger.trace("UserService: Вызван метод getUserByEmail().");
-        try (SqlSession session = sessionFactory.openSession(true)) {
-            userMapper = session.getMapper(UserMapper.class);
-            return userMapper.findUserByEmail(userEmail)
-                    .orElseThrow(() -> new NotFoundException(NOT_FOUND_BY_EMAIL_MSG));
-        } catch (Exception e) {
-            logger.error("UserService: Произошла ошибка при попытке получить пользователя из БД по email.");
-            e.printStackTrace();
-            return null;
-        }
+        logger.trace("Вызван метод getUserByEmail().");
+        return userRepository.getUserByEmail(userEmail)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_BY_EMAIL_MSG));
     }
 
-    public List<User> getUsers(Map<String, String> filters, String sortBy, String sortDir) {
-        logger.trace("UserService: Вызван метод getUsers().");
+    public List<User> getUsers(Map<String, String> requestParams) {
+        logger.trace("Вызван метод getUsers().");
+        String sortBy = requestParams.remove("sortBy");
+        String sortDir = requestParams.remove("sortDir");
         if (sortBy == null) sortBy = "id";
         if (sortDir == null) sortDir = "ASC";
-        try (SqlSession session = sessionFactory.openSession(true)) {
-            userMapper = session.getMapper(UserMapper.class);
-            return userMapper.findUsersBySelectStatement(UserFiltersBuilder.generateSelectStatement(filters, sortBy, sortDir));
-        } catch (Exception e) {
-            logger.error("UserService: Произошла ошибка при попытке получить список пользователей из БД.");
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
+        SelectStatementProvider selectStatement = UserFiltersBuilder.generateSelectStatement(requestParams, sortBy, sortDir);
+        return userRepository.getUserList(selectStatement);
     }
 
     public void createNewUser(User userToSave) {
-        logger.trace("UserService: Вызван метод createNewUser().");
-        try (SqlSession session = sessionFactory.openSession(true)) {
-            userMapper = session.getMapper(UserMapper.class);
-            userMapper.saveUser(userToSave);
-        } catch (Exception e) {
-            logger.error("UserService: Произошла ошибка при попытке сохранить нового пользователя в БД.");
-            e.printStackTrace();
-        }
+        logger.trace("Вызван метод createNewUser().");
+        userValidator.validateUser(userToSave);
+        userRepository.createNewUser(userToSave);
     }
 
     public void updateUserInfo(User updatedUser) {
-        logger.trace("UserService: Вызван метод updateUserInfo().");
-        try (SqlSession session = sessionFactory.openSession(true)) {
-            userMapper = session.getMapper(UserMapper.class);
-            userMapper.updateUser(updatedUser);
-        } catch (Exception e) {
-            logger.error("UserService: Произошла ошибка при попытке обновить данные пользователя в БД.");
-            e.printStackTrace();
-        }
+        logger.trace("Вызван метод updateUserInfo().");
+        userValidator.validateUser(updatedUser);
+        userRepository.updateUserInfo(updatedUser);
     }
 
     public void deleteUserById(int userToDeleteId) {
-        logger.trace("UserService: Вызван метод deleteUserById().");
-        try (SqlSession session = sessionFactory.openSession(true)) {
-            userMapper = session.getMapper(UserMapper.class);
-            userMapper.deleteUserById(userToDeleteId);
-        } catch (Exception e) {
-            logger.error("UserService: Произошла ошибка при попытке удалить пользователя из БД.");
-            e.printStackTrace();
-        }
+        logger.trace("Вызван метод deleteUserById().");
+        userRepository.deleteUserById(userToDeleteId);
     }
 }

@@ -5,6 +5,7 @@ import dev.trifanya.swing_app.SwingClientApp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.jms.*;
@@ -14,7 +15,7 @@ import java.util.HashMap;
 import static javax.jms.Session.AUTO_ACKNOWLEDGE;
 
 public class TaskMessageProducer {
-    private static final Logger logger = SwingClientApp.logger;
+    private static final Logger logger = LogManager.getLogger(TaskMessageProducer.class);
 
     private final Session session;
     private final Destination destination;
@@ -30,7 +31,7 @@ public class TaskMessageProducer {
     }
 
     public void sendGetTaskListMessage(Map<String, String> requestParams) {
-        logger.trace("TaskMessageProducer: Вызван метод sendGetTaskListMessage().");
+        logger.trace("Вызван метод sendGetTaskListMessage().");
         try {
             Map<String, String> notNullParams = new HashMap<>();
             for (Map.Entry<String, String> param : requestParams.entrySet()) {
@@ -44,12 +45,12 @@ public class TaskMessageProducer {
             producer.send(destination, message);
             logger.info("Сообщение успешно отправлено.");
         } catch (JMSException | JsonProcessingException exception) {
-            logger.error("TaskMessageProducer: Произошла ошибка при отправке сообщения.");
+            logger.error("Произошла ошибка при отправке сообщения.");
         }
     }
 
     public void sendCreateTaskMessage(Task taskToSave) {
-        logger.trace("TaskMessageProducer: Вызван метод sendCreateTaskMessage().");
+        logger.trace("Вызван метод sendCreateTaskMessage().");
         try {
             String messageToSend = objectMapper.writeValueAsString(taskToSave);
             TextMessage message = session.createTextMessage(messageToSend);
@@ -57,12 +58,12 @@ public class TaskMessageProducer {
             producer.send(destination, message);
             logger.info("Сообщение успешно отправлено.");
         } catch (JMSException | JsonProcessingException exception) {
-            logger.error("TaskMessageProducer: Произошла ошибка при отправке сообщения.");
+            logger.error("Произошла ошибка при отправке сообщения.");
         }
     }
 
     public void sendUpdateTaskMessage(Task updatedTask) {
-        logger.trace("TaskMessageProducer: Вызван метод sendUpdateTaskMessage().");
+        logger.trace("Вызван метод sendUpdateTaskMessage().");
         try {
             String messageToSend = objectMapper.writeValueAsString(updatedTask);
             TextMessage message = session.createTextMessage(messageToSend);
@@ -70,12 +71,12 @@ public class TaskMessageProducer {
             producer.send(destination, message);
             logger.info("Сообщение успешно отправлено.");
         } catch (JMSException | JsonProcessingException exception) {
-            logger.error("TaskMessageProducer: Произошла ошибка при отправке сообщения.");
+            logger.error("Произошла ошибка при отправке сообщения.");
         }
     }
 
     public void sendDeleteTaskMessage(int taskToDeleteId) {
-        logger.trace("TaskMessageProducer: Вызван метод sendDeleteTaskMessage().");
+        logger.trace("Вызван метод sendDeleteTaskMessage().");
         try {
             String messageToSend = objectMapper.writeValueAsString(taskToDeleteId);
             TextMessage message = session.createTextMessage(messageToSend);
@@ -83,7 +84,7 @@ public class TaskMessageProducer {
             producer.send(destination, message);
             logger.info("Сообщение успешно отправлено.");
         } catch (JMSException | JsonProcessingException exception) {
-            logger.error("TaskMessageProducer: Произошла ошибка при отправке сообщения.");
+            logger.error("Произошла ошибка при отправке сообщения.");
         }
     }
 }
