@@ -1,7 +1,6 @@
 package dev.trifanya.swing_app.activemq.handler;
 
 import dev.trifanya.server_app.model.Task;
-import dev.trifanya.swing_app.SwingClientApp;
 import dev.trifanya.swing_app.swing.MainFrame;
 
 import org.apache.logging.log4j.LogManager;

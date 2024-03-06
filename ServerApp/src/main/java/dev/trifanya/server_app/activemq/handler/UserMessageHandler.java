@@ -33,7 +33,11 @@ public class UserMessageHandler {
     public void handleSignIn(Destination responseDestination, TextMessage textMessage) {
         logger.trace("Вызван метод handleSignIn().");
         try {
-            String[] credentials = textMessage.getText().split(" ");
+            String[] credentials = objectMapper.readValue(textMessage.getText(), String[].class);
+            if (credentials[0].isEmpty() || credentials[1].isEmpty()) {
+                userMessageProducer.sendErrorMessage(responseDestination, "Вы не ввели логин или пароль.");
+                return;
+            }
             User user = userService.getUserByEmail(credentials[0]);
             if (user.getPassword().equals(credentials[1])) {
                 userMessageProducer.sendAuthUser(responseDestination, user);
@@ -55,6 +59,7 @@ public class UserMessageHandler {
             userMessageProducer.sendUser(responseDestination, userService.getUserById(userId));
         } catch (JMSException | JsonProcessingException exception) {
             logger.error("Произошла ошибка при обработке или отправке сообщения.", exception);
+            userMessageProducer.sendErrorMessage(responseDestination, "Не удалось получить данные о пользователе.");
         }
     }
 
@@ -62,10 +67,12 @@ public class UserMessageHandler {
         logger.trace("Вызван метод handleGetUserList().");
         try {
             Map<String, String> userRequestParams = objectMapper.readValue(textMessage.getText(),
-                    new TypeReference<HashMap<String, String>>() {});
+                    new TypeReference<HashMap<String, String>>() {
+                    });
             userMessageProducer.sendUserList(responseDestination, userService.getUsers(userRequestParams));
         } catch (JMSException | JsonProcessingException exception) {
             logger.error("Произошла ошибка при обработке или отправке сообщения.", exception);
+            userMessageProducer.sendErrorMessage(responseDestination, "Не удалось получить список пользователей.");
         }
     }
 
@@ -77,6 +84,7 @@ public class UserMessageHandler {
             userMessageProducer.sendUserCreatedMessage(responseDestination, "Пользователь успешно зарегистрирован.");
         } catch (JMSException | JsonProcessingException exception) {
             logger.error("Произошла ошибка при обработке или отправке сообщения.", exception);
+            userMessageProducer.sendErrorMessage(responseDestination, "Не удалось создать пользователя.");
         } catch (Exception exception) {
             logger.warn("Произошла ошибка при попытке создать пользвателя.", exception);
             userMessageProducer.sendErrorMessage(responseDestination, exception.getMessage());
@@ -91,6 +99,7 @@ public class UserMessageHandler {
             userMessageProducer.sendUserCreatedMessage(responseDestination, "Профиль успешно отредактирован.");
         } catch (JMSException | JsonProcessingException exception) {
             logger.error("Произошла ошибка при обработке или отправке сообщения.", exception);
+            userMessageProducer.sendErrorMessage(responseDestination, "Не удалось обновить данные пользователя.");
         } catch (Exception exception) {
             logger.warn("Произошла ошибка при попытке обновить данные пользователя.", exception);
             userMessageProducer.sendErrorMessage(responseDestination, exception.getMessage());
@@ -105,6 +114,7 @@ public class UserMessageHandler {
             userMessageProducer.sendUserCreatedMessage(responseDestination, "Пользователь успешно удален.");
         } catch (JMSException | JsonProcessingException exception) {
             logger.error("Произошла ошибка при обработке или отправке сообщения.", exception);
+            userMessageProducer.sendErrorMessage(responseDestination, "Не удалось удалить пользователя.");
         } catch (Exception exception) {
             logger.warn("Произошла ошибка при попытке удалить пользователя.", exception);
             userMessageProducer.sendErrorMessage(responseDestination, exception.getMessage());

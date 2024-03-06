@@ -2,10 +2,10 @@ package dev.trifanya.swing_app.swing;
 
 import dev.trifanya.server_app.model.Task;
 import dev.trifanya.server_app.model.User;
-import dev.trifanya.swing_app.swing.menu_panel.MenuPanel;
 import dev.trifanya.swing_app.activemq.producer.TaskMessageProducer;
 import dev.trifanya.swing_app.activemq.producer.UserMessageProducer;
 import dev.trifanya.swing_app.swing.content_panel.ContentLayeredPane;
+import dev.trifanya.swing_app.swing.menu_panel.MenuPanel;
 import dev.trifanya.swing_app.swing.sort_and_filters_panel.SortAndFiltersPanel;
 
 import lombok.Getter;

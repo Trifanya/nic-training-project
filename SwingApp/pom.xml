@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>dev.trifanya.swing_app</groupId>
-    <artifactId>SwingApp</artifactId>
+    <artifactId>SwingClientApp</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -97,6 +97,52 @@
                                     <mainClass>dev.trifanya.swing_app.SwingClientApp</mainClass>
                                 </transformer>
                             </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Deb-packaging plugin -->
+            <plugin>
+                <artifactId>jdeb</artifactId>
+                <groupId>org.vafer</groupId>
+                <version>1.9</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jdeb</goal>
+                        </goals>
+                        <configuration>
+                            <deb>${project.build.directory}/nictp_crud_swing.deb</deb>
+                            <dataSet>
+                                <data>
+                                    <src>${project.build.directory}/${project.build.finalName}.jar</src>
+                                    <type>file</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/home/trifanya/Java/NICTP/crudapp/swing/lib</prefix>
+                                        <!--prefix>/deb/lib</prefix-->
+                                    </mapper>
+                                </data>
+                                <data>
+                                    <src>src/deb/bin/nictp_crud_swing.sh</src>
+                                    <type>file</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/home/trifanya/Java/NICTP/crudapp/swing/bin</prefix>
+                                        <!--prefix>/deb/bin</prefix-->
+                                    </mapper>
+                                </data>
+                                <data>
+                                    <src>src/systemd/nictp_crud_swing.service</src>
+                                    <type>file</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/etc/systemd/system</prefix>
+                                        <!--prefix>/deb/systemd</prefix-->
+                                    </mapper>
+                                </data>
+                            </dataSet>
                         </configuration>
                     </execution>
                 </executions>

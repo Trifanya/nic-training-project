@@ -15,7 +15,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 public class UserFiltersBuilder {
     private static final SqlTable sqlTable = SqlTable.of("tms_user");
 
-    public static SelectStatementProvider generateSelectStatement(Map<String, String> filters, String sortByColumn, String sortDir) {
+    public SelectStatementProvider generateSelectStatement(Map<String, String> filters, String sortByColumn, String sortDir) {
         SelectStatementProvider selectStatement;
         System.out.println("filters: " + filters);
         if (filters == null || filters.isEmpty()) {
@@ -35,7 +35,7 @@ public class UserFiltersBuilder {
         return selectStatement;
     }
 
-    public static List<AndOrCriteriaGroup> buildFilterCriterion(Map<String, String> filters) {
+    private List<AndOrCriteriaGroup> buildFilterCriterion(Map<String, String> filters) {
         List<AndOrCriteriaGroup> criteriaGroups = new ArrayList<>();
 
         for (Map.Entry<String, String> filter : filters.entrySet()) {
@@ -52,13 +52,13 @@ public class UserFiltersBuilder {
         return criteriaGroups;
     }
 
-    public static SortSpecification buildSortCriterion(String sortByColumn, String sortDir) {
+    private SortSpecification buildSortCriterion(String sortByColumn, String sortDir) {
         SortSpecification specification = new ColumnSortSpecification("tms_user", sqlTable.column(sortByColumn));
         if (sortDir.equals("DESC")) specification = specification.descending();
         return specification;
     }
 
-    public static AndOrCriteriaGroup createLikeCriterion(String column1Name, String column2Name, String value) {
+    private AndOrCriteriaGroup createLikeCriterion(String column1Name, String column2Name, String value) {
         ColumnAndConditionCriterion criterion1 = new ColumnAndConditionCriterion.Builder()
                 .withColumn(sqlTable.column(column1Name))
                 .withCondition(isLikeCaseInsensitive(value))
@@ -79,7 +79,7 @@ public class UserFiltersBuilder {
                 .build();
     }
 
-    public static AndOrCriteriaGroup createEqualsCriterion(String columnName, String value) {
+    private AndOrCriteriaGroup createEqualsCriterion(String columnName, String value) {
         ColumnAndConditionCriterion criterion = new ColumnAndConditionCriterion.Builder()
                 .withColumn(sqlTable.column(columnName))
                 .withCondition(isEqualTo(value))

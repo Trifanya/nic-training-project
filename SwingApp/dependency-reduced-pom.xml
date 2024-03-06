@@ -26,6 +26,48 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.vafer</groupId>
+        <artifactId>jdeb</artifactId>
+        <version>1.9</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>jdeb</goal>
+            </goals>
+            <configuration>
+              <deb>${project.build.directory}/nictp_crud_swing.deb</deb>
+              <dataSet>
+                <data>
+                  <src>${project.build.directory}/${project.build.finalName}.jar</src>
+                  <type>file</type>
+                  <mapper>
+                    <type>perm</type>
+                    <prefix>/home/trifanya/Java/NICTP/crudapp/swing/lib</prefix>
+                  </mapper>
+                </data>
+                <data>
+                  <src>src/deb/bin/nictp_crud_swing.sh</src>
+                  <type>file</type>
+                  <mapper>
+                    <type>perm</type>
+                    <prefix>/home/trifanya/Java/NICTP/crudapp/swing/bin</prefix>
+                  </mapper>
+                </data>
+                <data>
+                  <src>src/systemd/nictp_crud_swing.service</src>
+                  <type>file</type>
+                  <mapper>
+                    <type>perm</type>
+                    <prefix>/etc/systemd/system</prefix>
+                  </mapper>
+                </data>
+              </dataSet>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
   <properties>

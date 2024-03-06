@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.jms.*;
+import java.util.Arrays;
 import java.util.Collections;
 
 import static javax.jms.Session.AUTO_ACKNOWLEDGE;
@@ -32,11 +33,13 @@ public class UserMessageProducer {
     public void sendSignInMessage(String email, String password) {
         logger.trace("Вызван метод sendSignInMessage().");
         try {
-            TextMessage message = session.createTextMessage(email + " " + password);
+            //String messageToSend = objectMapper.writeValueAsString(Arrays.asList(email, password));
+            String messageToSend = objectMapper.writeValueAsString(new String[]{email, password});
+            TextMessage message = session.createTextMessage(messageToSend);
             message.setStringProperty("Request name", "Sign in");
             producer.send(destination, message);
             logger.info("Сообщение успешно отправлено.");
-        } catch (JMSException exception) {
+        } catch (JMSException | JsonProcessingException exception) {
             logger.error("Произошла ошибка при отправке сообщения.");
         }
     }

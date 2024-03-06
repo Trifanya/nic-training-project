@@ -121,6 +121,11 @@ public class TaskFormPanel extends JPanel {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String validationResult = validateForm();
+                if (!validationResult.equals("+")) {
+                    contentLayeredPane.getMainFrame().showWarning(validationResult);
+                    return;
+                }
                 User author = contentLayeredPane.getUserDetailsPanel().getCurrentUser();
                 String performerEmail = performerBox.getSelectedItem().toString().split(" ")[0];
                 Task taskToSave = new Task()
@@ -255,5 +260,18 @@ public class TaskFormPanel extends JPanel {
         }
         fillTaskForm(task);
         rewriteToUpdate();
+    }
+
+    public String validateForm() {
+        if (titleField.getText().isEmpty()) {
+            return "Необходимо указать название задачи.";
+        } else if (performerBox.getSelectedItem() == null) {
+            return "Необходимо указать исполнителя задачи.";
+        } else if (priorityBox.getSelectedItem() == null) {
+            return "Необходимо указать приоритет задачи.";
+        } else if (dateTimePicker.getDatePicker().getDate() == null || dateTimePicker.getTimePicker().getTime() == null) {
+            return "Необходимо указать дату и время дедлайна.";
+        }
+        return "+";
     }
 }

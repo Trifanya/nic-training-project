@@ -53,7 +53,7 @@
                   <type>file</type>
                   <mapper>
                     <type>perm</type>
-                    <prefix>/deb/lib</prefix>
+                    <prefix>/home/trifanya/Java/NICTP/crudapp/server/lib</prefix>
                   </mapper>
                 </data>
                 <data>
@@ -61,7 +61,7 @@
                   <type>file</type>
                   <mapper>
                     <type>perm</type>
-                    <prefix>/deb/bin</prefix>
+                    <prefix>/home/trifanya/Java/NICTP/crudapp/server/bin</prefix>
                   </mapper>
                 </data>
                 <data>
@@ -69,7 +69,7 @@
                   <type>file</type>
                   <mapper>
                     <type>perm</type>
-                    <prefix>/deb/systemd</prefix>
+                    <prefix>/etc/systemd/system</prefix>
                   </mapper>
                 </data>
               </dataSet>

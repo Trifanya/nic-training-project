@@ -6,6 +6,7 @@ import dev.trifanya.server_app.mybatis.criteria_builder.UserFiltersBuilder;
 
 import dev.trifanya.server_app.repository.UserRepository;
 import dev.trifanya.server_app.validator.UserValidator;
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -13,6 +14,7 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import java.util.Map;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class UserService {
     private static final Logger logger = LogManager.getLogger(UserService.class);
     private static final String NOT_FOUND_BY_ID_MSG = "Пользователь с указанным ID не найден.";
@@ -20,10 +22,12 @@ public class UserService {
 
     private final UserValidator userValidator;
     private final UserRepository userRepository;
+    private final UserFiltersBuilder userFiltersBuilder;
 
     public UserService() {
         userValidator = new UserValidator();
         userRepository = new UserRepository();
+        userFiltersBuilder = new UserFiltersBuilder();
     }
 
     public User getUserById(int userId) {
@@ -44,7 +48,7 @@ public class UserService {
         String sortDir = requestParams.remove("sortDir");
         if (sortBy == null) sortBy = "id";
         if (sortDir == null) sortDir = "ASC";
-        SelectStatementProvider selectStatement = UserFiltersBuilder.generateSelectStatement(requestParams, sortBy, sortDir);
+        SelectStatementProvider selectStatement = userFiltersBuilder.generateSelectStatement(requestParams, sortBy, sortDir);
         return userRepository.getUserList(selectStatement);
     }
 

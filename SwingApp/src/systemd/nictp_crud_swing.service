@@ -1,11 +1,11 @@
 [Unit]
-Description=NIC training project, CRUD Server Application
+Description=NIC training project, CRUD Swing Application
 After=syslog.target network.target
 
 [Service]
-WorkingDirectory=/home/trifanya/Java/NICTP/crudapp/server
+WorkingDirectory=/home/trifanya/Java/NICTP/crudapp/swing
 SuccessExitStatus=143
-ExecStart=/home/trifanya/Java/NICTP/crudapp/server/bin/nictp_crud_server.sh
+ExecStart=/home/trifanya/Java/NICTP/crudapp/swing/bin/nictp_crud_swing.sh
 ExecStop=/bin/kill -15 $MAINPID
 
 Type=forking

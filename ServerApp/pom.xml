@@ -81,6 +81,31 @@
             <version>${log4j.version}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.1.0</version>
+            <scope>test</scope>
+        </dependency>
+
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter &ndash;&gt;
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>5.1.0</version>
+            <scope>test</scope>
+        </dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>3.0.0</version>
+            <scope>test</scope>
+        </dependency>
+
+
     </dependencies>
 
     <build>
@@ -139,7 +164,8 @@
                                     <type>file</type>
                                     <mapper>
                                         <type>perm</type>
-                                        <prefix>/deb/lib</prefix>
+                                        <prefix>/home/trifanya/Java/NICTP/crudapp/server/lib</prefix>
+                                        <!--prefix>/deb/lib</prefix-->
                                     </mapper>
                                 </data>
                                 <data>
@@ -147,7 +173,8 @@
                                     <type>file</type>
                                     <mapper>
                                         <type>perm</type>
-                                        <prefix>/deb/bin</prefix>
+                                        <prefix>/home/trifanya/Java/NICTP/crudapp/server/bin</prefix>
+                                        <!--prefix>/deb/bin</prefix-->
                                     </mapper>
                                 </data>
                                 <data>
@@ -155,7 +182,8 @@
                                     <type>file</type>
                                     <mapper>
                                         <type>perm</type>
-                                        <prefix>/deb/systemd</prefix>
+                                        <prefix>/etc/systemd/system</prefix>
+                                        <!--prefix>/deb/systemd</prefix-->
                                     </mapper>
                                 </data>
                             </dataSet>

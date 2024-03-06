@@ -97,7 +97,6 @@ public class CredentialsFormPanel extends JPanel {
 
     public void initSubmitButton() {
         submitButton = new JButton("ВОЙТИ В АККАУНТ");
-        submitButton.setPreferredSize(new Dimension(240, 40));
         MainFrame.setBasicInterface(submitButton);
         submitButton.addActionListener(new ActionListener() {
             @Override
@@ -109,7 +108,7 @@ public class CredentialsFormPanel extends JPanel {
         add(submitButton, new GridBagConstraints(
                 0, 2, 1, 1, 0, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 0, 20));
+                new Insets(0, leftMargin, bottomMargin, rightMargin), 50, 30));
     }
 
     public void clearForm() {

@@ -13,11 +13,11 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 public class TaskFiltersBuilder {
     private static final SqlTable sqlTable = SqlTable.of("task");
 
-    public static SelectStatementProvider generateSelectStatement(Map<String, String> filters, String sortByColumn, String sortDir) {
+    public SelectStatementProvider generateSelectStatement(Map<String, String> filters, String sortByColumn, String sortDir) {
         SelectStatementProvider selectStatement;
         if (filters == null || filters.isEmpty()) {
             selectStatement = select(sqlTable.allColumns())
-                    .from(SqlTable.of("task"))
+                    .from(sqlTable)
                     .orderBy(buildSortCriterion(sortByColumn, sortDir))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -32,7 +32,7 @@ public class TaskFiltersBuilder {
         return selectStatement;
     }
 
-    public static List<AndOrCriteriaGroup> buildFilterCriterion(Map<String, String> filters) {
+    private List<AndOrCriteriaGroup> buildFilterCriterion(Map<String, String> filters) {
         List<AndOrCriteriaGroup> criteriaGroups = new ArrayList<>();
 
         for (Map.Entry<String, String> filter : filters.entrySet()) {
@@ -60,13 +60,13 @@ public class TaskFiltersBuilder {
         return criteriaGroups;
     }
 
-    public static SortSpecification buildSortCriterion(String sortByColumn, String sortDir) {
+    private SortSpecification buildSortCriterion(String sortByColumn, String sortDir) {
         SortSpecification specification = new ColumnSortSpecification("task", sqlTable.column(sortByColumn));
         if (sortDir.equals("DESC")) specification = specification.descending();
         return specification;
     }
 
-    public static AndOrCriteriaGroup createEqualsCriterion(String columnName, String value) {
+    private static AndOrCriteriaGroup createEqualsCriterion(String columnName, String value) {
         ColumnAndConditionCriterion criterion = new ColumnAndConditionCriterion.Builder()
                 .withColumn(sqlTable.column(columnName))
                 .withCondition(isEqualTo(value))
@@ -77,7 +77,7 @@ public class TaskFiltersBuilder {
                 .build();
     }
 
-    public static AndOrCriteriaGroup createLikeCriterion(String columnName, String value) {
+    private AndOrCriteriaGroup createLikeCriterion(String columnName, String value) {
         ColumnAndConditionCriterion criterion = new ColumnAndConditionCriterion.Builder()
                 .withColumn(sqlTable.column(columnName))
                 .withCondition(isLikeCaseInsensitive(value))
@@ -88,7 +88,7 @@ public class TaskFiltersBuilder {
                 .build();
     }
 
-    public static AndOrCriteriaGroup createInCriterion(String columnName, Set<String> columnValues) {
+    private AndOrCriteriaGroup createInCriterion(String columnName, Set<String> columnValues) {
         ColumnAndConditionCriterion criterion = new ColumnAndConditionCriterion.Builder()
                 .withColumn(sqlTable.column(columnName))
                 .withCondition(isIn(columnValues))
@@ -99,7 +99,7 @@ public class TaskFiltersBuilder {
                 .build();
     }
 
-    public static AndOrCriteriaGroup createRangeStartCriterion(String columnName, LocalDateTime rangeStart) {
+    private AndOrCriteriaGroup createRangeStartCriterion(String columnName, LocalDateTime rangeStart) {
         ColumnAndConditionCriterion criterion = new ColumnAndConditionCriterion.Builder()
                 .withColumn(sqlTable.column(columnName))
                 .withCondition(isGreaterThan(rangeStart))
@@ -110,7 +110,7 @@ public class TaskFiltersBuilder {
                 .build();
     }
 
-    public static AndOrCriteriaGroup createRangeEndCriterion(String columnName, LocalDateTime rangeEnd) {
+    private AndOrCriteriaGroup createRangeEndCriterion(String columnName, LocalDateTime rangeEnd) {
         ColumnAndConditionCriterion criterion = new ColumnAndConditionCriterion.Builder()
                 .withColumn(sqlTable.column(columnName))
                 .withCondition(isLessThan(rangeEnd))

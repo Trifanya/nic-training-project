@@ -76,7 +76,7 @@ public class TaskMessageHandler {
             taskMessageProducer.sendSuccessMessage(responseDestination, "Задача успешно обновлена.");
         } catch (JMSException | JsonProcessingException exception) {
             logger.error("Произошла ошибка при обработке или отправке сообщения.");
-            taskMessageProducer.sendErrorMessage(responseDestination, "Не удалось обновить информация о задаче.");
+            taskMessageProducer.sendErrorMessage(responseDestination, "Не удалось обновить данные задачи.");
         } catch (Exception exception) {
             logger.warn("Произошла ошибка при попытке обновить данные о задаче.");
             taskMessageProducer.sendErrorMessage(responseDestination, exception.getMessage());

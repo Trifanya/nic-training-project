@@ -90,8 +90,10 @@ public class ContentLayeredPane extends JLayeredPane {
         // Все панели, кроме текущей, уходят на нулевой слой
         for (JPanel panel : layers) {
             setLayer(panel, 0);
+            panel.setVisible(false);
         }
         setLayer(currentPanel, 1); // Текущая панель выходит на первый слой
+        currentPanel.setVisible(true);
 
         // Если текущей панелью является панель со списком задач, то панель сортировки и фильтров становится активной
         if (currentPanel instanceof TaskListPanel) {

@@ -111,7 +111,6 @@ public class UserFormPanel extends JPanel {
 
     public void initSubmitButton() {
         submitButton = new JButton("ЗАРЕГИСТРИРОВАТЬ ПОЛЬЗОВАТЕЛЯ");
-        submitButton.setPreferredSize(new Dimension(400, 40));
         MainFrame.setBasicInterface(submitButton);
         submitButton.addActionListener(new ActionListener() {
             @Override
@@ -138,7 +137,7 @@ public class UserFormPanel extends JPanel {
         add(submitButton, new GridBagConstraints(
                 0, 5, 1, 1, 0, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
-                new Insets(0, leftMargin, bottomMargin, rightMargin), 0, 20));
+                new Insets(0, leftMargin, bottomMargin, rightMargin), 60, 30));
     }
 
     private void initUserNameRow() {

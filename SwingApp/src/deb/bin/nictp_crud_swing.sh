@@ -3,17 +3,16 @@
 LIBSPATH=/usr/lib:/usr/lib/x86_64-linux-gnu
 export LD_LIBRARY_PATH=$LIBSPATH
 
-APPDIR=/home/trifanya/Java/NICTP/crudapp/server
+APPDIR=/home/trifanya/Java/NICTP/crudapp/swing
 JAVA=java
-MAINCLASS=dev.trifanya.server_app.ServerApp
+MAINCLASS=dev.trifanya.swing_app.SwingClientApp
 
 cd $APPDIR
 
-#mvn liquibase:update
 exec $JAVA \
   -server \
   -Djava.library.path=$LIBSPATH \
-  -Dapp.name=nictp_crud_server \
+  -Dapp.name=nictp_crud_swing \
   -Xms1024m \
   -Xmx1024m \
   -XX:+UseParNewGC \
