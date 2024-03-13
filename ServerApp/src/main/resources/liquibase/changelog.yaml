@@ -1,8 +1,7 @@
 databaseChangeLog:
   - include:
-      file: liquibase/changeset/initialTableCreation.yaml
-
+      file: changeset/initialTableCreation.yaml
   - include:
-      file: liquibase/changeset/userTableEnrichment.yaml
+      file: changeset/userTableEnrichment.yaml
   - include:
-      file: liquibase/changeset/taskTableEnrichment.yaml
+      file: changeset/taskTableEnrichment.yaml

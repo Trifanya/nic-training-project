@@ -19,8 +19,8 @@ databaseChangeLog:
                   name: email
                   value: "i.am.ironman@avg.com"
               - column:
-                  name: password # Test_passw0rd
-                  value: "$2a$12$jHV9wOITwW6If.ZywSTr2OBm.NR2JLZTKWgPKB9MsvlDz4phqyp2."
+                  name: password
+                  value: "Test_passw0rd"
 
         - insert: # id = 2
             tableName: tms_user
@@ -38,8 +38,8 @@ databaseChangeLog:
                   name: position
                   value: "Главный по ремонту"
               - column:
-                  name: password # Test_passw0rd
-                  value: "$2a$12$Fskfu/MzWcblbtKeN9mPsOJeFKnUQ1LCV.3cw6HXt/TOYrue8lawu"
+                  name: password
+                  value: "Test_passw0rd"
 
         - insert: # id = 3
             tableName: tms_user
@@ -57,8 +57,8 @@ databaseChangeLog:
                   name: email
                   value: "thundergod@avg.com"
               - column:
-                  name: password # Test_passw0rd
-                  value: "$2a$12$lpadnCQkb3kIgsFNJGhmxuxgPJaK78E.Oh5b4IgZJ4QAK3TjkU0Le"
+                  name: password
+                  value: "Test_passw0rd"
 
         - insert: # id = 4
             tableName: tms_user
@@ -76,8 +76,8 @@ databaseChangeLog:
                   name: email
                   value: "friendly.neighbor@avg.com"
               - column:
-                  name: password # Test_passw0rd
-                  value: "$2a$12$jHV9wOITwW6If.ZywSTr2OBm.NR2JLZTKWgPKB9MsvlDz4phqyp2."
+                  name: password
+                  value: "Test_passw0rd"
 
         - insert: # id = 5
             tableName: tms_user
@@ -95,8 +95,8 @@ databaseChangeLog:
                   name: email
                   value: "huuulk@avg.com"
               - column:
-                  name: password # Test_passw0rd
-                  value: "$2a$12$jHV9wOITwW6If.ZywSTr2OBm.NR2JLZTKWgPKB9MsvlDz4phqyp2."
+                  name: password
+                  value: "Test_passw0rd"
 
         - insert: # id = 6
             tableName: tms_user
@@ -114,6 +114,6 @@ databaseChangeLog:
                   name: email
                   value: "hawk.eye@avg.com"
               - column:
-                  name: password # Test_passw0rd
-                  value: "$2a$12$jHV9wOITwW6If.ZywSTr2OBm.NR2JLZTKWgPKB9MsvlDz4phqyp2."
+                  name: password
+                  value: "Test_passw0rd"
 

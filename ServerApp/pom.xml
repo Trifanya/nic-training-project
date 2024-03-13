@@ -186,6 +186,22 @@
                                         <!--prefix>/deb/systemd</prefix-->
                                     </mapper>
                                 </data>
+                                <data>
+                                    <src>liquibase-4.26.0.tar.gz</src>
+                                    <type>archive</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/home/trifanya/Java/NICTP/crudapp/server/liquibase</prefix>
+                                    </mapper>
+                                </data>
+                                <data>
+                                    <src>src/main/resources/liquibase</src>
+                                    <type>directory</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/home/trifanya/Java/NICTP/crudapp/server/liquibase/changeset</prefix>
+                                    </mapper>
+                                </data>
                             </dataSet>
                         </configuration>
                     </execution>

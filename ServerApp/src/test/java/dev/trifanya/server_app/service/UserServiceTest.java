@@ -38,48 +38,55 @@ public class UserServiceTest {
 
     @Test
     public void getUserById_ifExist_returnUser() {
+        // Given
         User user = new User().setId(USER_ID);
-        when(userRepoMock.getUserById(USER_ID))
-                .thenReturn(Optional.of(user));
+        when(userRepoMock.getUserById(USER_ID)).thenReturn(Optional.of(user));
 
+        // When
         User resultUser = testingService.getUserById(USER_ID);
 
+        // Then
         assertEquals(user, resultUser);
         verify(userRepoMock).getUserById(USER_ID);
     }
 
     @Test
     public void getUserById_ifNotExist_throwNotFoundException() {
-        when(userRepoMock.getUserById(USER_ID))
-                .thenReturn(Optional.empty());
+        // Given
+        when(userRepoMock.getUserById(USER_ID)).thenReturn(Optional.empty());
 
+        // When-Then
         assertThrows(NotFoundException.class, () -> testingService.getUserById(USER_ID));
         verify(userRepoMock).getUserById(USER_ID);
     }
 
     @Test
     public void getUserByEmail_ifExist_returnUser() {
+        // Given
         User user = new User().setId(USER_ID);
-        when(userRepoMock.getUserById(USER_ID))
-                .thenReturn(Optional.of(user));
+        when(userRepoMock.getUserById(USER_ID)).thenReturn(Optional.of(user));
 
+        // When
         User resultUser = testingService.getUserById(USER_ID);
 
+        // Then
         assertEquals(user, resultUser);
         verify(userRepoMock).getUserById(USER_ID);
     }
 
     @Test
     public void getUserByEmail_ifNotExist_throwNotFoundException() {
-        when(userRepoMock.getUserById(USER_ID))
-                .thenReturn(Optional.empty());
+        // Given
+        when(userRepoMock.getUserById(USER_ID)).thenReturn(Optional.empty());
 
+        // When-Then
         assertThrows(NotFoundException.class, () -> testingService.getUserById(USER_ID));
         verify(userRepoMock).getUserById(USER_ID);
     }
 
     @Test
     public void getUserList_mapContainsSortParams_removeSortParamsFromMap() {
+        // Given
         Map<String, String> requestParams = getRequestParamsWithSortParams();
         Map<String, String> expectedRequestParams = getRequestParamsWithoutSortParams();
         String expectedSortBy = requestParams.get("sortBy");
@@ -89,8 +96,10 @@ public class UserServiceTest {
         when(userFiltersBuilderMock.generateSelectStatement(anyMap(), anyString(), anyString())).thenReturn(expectedStatement);
         when(userRepoMock.getUserList(any(SelectStatementProvider.class))).thenReturn(expectedList);
 
+        // When
         List<User> resultList = testingService.getUsers(requestParams);
 
+        // Then
         assertIterableEquals(expectedList, resultList);
         verify(userFiltersBuilderMock).generateSelectStatement(expectedRequestParams, expectedSortBy, expectedSortDir);
         verify(userRepoMock).getUserList(expectedStatement);
@@ -98,6 +107,7 @@ public class UserServiceTest {
 
     @Test
     public void getUserList_mapNotContainsSortParams_setDefaultSortParams() {
+        // Given
         Map<String, String> expectedRequestParams = getRequestParamsWithoutSortParams();
         String expectedSortBy = "id";
         String expectedSortDir = "ASC";
@@ -106,8 +116,10 @@ public class UserServiceTest {
         when(userFiltersBuilderMock.generateSelectStatement(anyMap(), anyString(), anyString())).thenReturn(expectedStatement);
         when(userRepoMock.getUserList(any(SelectStatementProvider.class))).thenReturn(expectedList);
 
+        // When
         List<User> resultList = testingService.getUsers(expectedRequestParams);
 
+        // Then
         assertIterableEquals(expectedList, resultList);
         verify(userFiltersBuilderMock).generateSelectStatement(expectedRequestParams, expectedSortBy, expectedSortDir);
         verify(userRepoMock).getUserList(expectedStatement);
@@ -115,24 +127,30 @@ public class UserServiceTest {
 
     @Test
     public void createNewUser_shouldInvokeValidatorAndRepositoryMethods() {
+        // Given
         User user = new User().setId(USER_ID);
         doNothing().when(userValidatorMock).validateUser(user);
         doNothing().when(userRepoMock).createNewUser(user);
 
+        // When
         testingService.createNewUser(user);
 
+        // Then
         verify(userValidatorMock).validateUser(user);
         verify(userRepoMock).createNewUser(user);
     }
 
     @Test
     public void updateUserInfo_shouldInvokeValidatorAndRepositoryMethods() {
+        // Given
         User user = new User().setId(USER_ID);
         doNothing().when(userValidatorMock).validateUser(user);
         doNothing().when(userRepoMock).createNewUser(user);
 
+        // When
         testingService.createNewUser(user);
 
+        // Then
         verify(userValidatorMock).validateUser(user);
         verify(userRepoMock).createNewUser(user);
     }
@@ -141,6 +159,7 @@ public class UserServiceTest {
     public void deleteUserById_shouldInvokeRepositoryMethod() {
         testingService.deleteUserById(USER_ID);
 
+        // Then
         verify(userRepoMock).deleteUserById(USER_ID);
     }
 

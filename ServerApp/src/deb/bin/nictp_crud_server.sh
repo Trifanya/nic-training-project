@@ -9,7 +9,6 @@ MAINCLASS=dev.trifanya.server_app.ServerApp
 
 cd $APPDIR
 
-#mvn liquibase:update
 exec $JAVA \
   -server \
   -Djava.library.path=$LIBSPATH \

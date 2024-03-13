@@ -37,27 +37,31 @@ public class TaskServiceTest {
 
     @Test
     public void getTaskById_ifExist_returnTask() {
+        // Given
         Task task = new Task().setId(TASK_ID);
-        when(taskRepoMock.getTaskById(TASK_ID))
-                .thenReturn(Optional.of(task));
+        when(taskRepoMock.getTaskById(TASK_ID)).thenReturn(Optional.of(task));
 
+        // When
         Task resultTask = testingService.getTaskById(TASK_ID);
 
+        // Then
         assertEquals(task, resultTask);
         verify(taskRepoMock).getTaskById(TASK_ID);
     }
 
     @Test
     public void getTaskById_ifNotExist_throwNotFoundException() {
-        when(taskRepoMock.getTaskById(TASK_ID))
-                .thenReturn(Optional.empty());
+        // Given
+        when(taskRepoMock.getTaskById(TASK_ID)).thenReturn(Optional.empty());
 
+        // When-Then
         assertThrows(NotFoundException.class, () -> testingService.getTaskById(TASK_ID));
         verify(taskRepoMock).getTaskById(TASK_ID);
     }
 
     @Test
     public void getTasks_mapContainsSortParams_removeSortParamsFromMap() {
+        // Given
         Map<String, String> requestParams = getRequestParamsWithSortParams();
         Map<String, String> expectedRequestParams = getRequestParamsWithoutSortParams();
         String expectedSortBy = requestParams.get("sortBy");
@@ -67,8 +71,10 @@ public class TaskServiceTest {
         when(taskFiltersBuilderMock.generateSelectStatement(anyMap(), anyString(), anyString())).thenReturn(expectedStatement);
         when(taskRepoMock.getTaskList(any(SelectStatementProvider.class))).thenReturn(expectedList);
 
+        // When
         List<Task> resultList = testingService.getTasks(requestParams);
 
+        // Then
         assertIterableEquals(expectedList, resultList);
         verify(taskFiltersBuilderMock).generateSelectStatement(expectedRequestParams, expectedSortBy, expectedSortDir);
         verify(taskRepoMock).getTaskList(expectedStatement);
@@ -76,6 +82,7 @@ public class TaskServiceTest {
 
     @Test
     public void getTasks_mapNotContainsSortParams_setDefaultSortParams() {
+        // Given
         Map<String, String> expectedRequestParams = getRequestParamsWithoutSortParams();
         String expectedSortBy = "id";
         String expectedSortDir = "ASC";
@@ -84,8 +91,10 @@ public class TaskServiceTest {
         when(taskFiltersBuilderMock.generateSelectStatement(anyMap(), anyString(), anyString())).thenReturn(expectedStatement);
         when(taskRepoMock.getTaskList(any(SelectStatementProvider.class))).thenReturn(expectedList);
 
+        // When
         List<Task> resultList = testingService.getTasks(expectedRequestParams);
 
+        // Then
         assertIterableEquals(expectedList, resultList);
         verify(taskFiltersBuilderMock).generateSelectStatement(expectedRequestParams, expectedSortBy, expectedSortDir);
         verify(taskRepoMock).getTaskList(expectedStatement);
@@ -93,33 +102,41 @@ public class TaskServiceTest {
 
     @Test
     public void createNewTask_shouldInvokeValidatorAndRepositoryMethods() {
+        // Given
         Task task = new Task().setId(TASK_ID);
         doNothing().when(taskValidatorMock).validateTask(task);
         doNothing().when(taskRepoMock).createNewTask(task);
 
+        // When
         testingService.createNewTask(task);
 
+        // Then
         verify(taskValidatorMock).validateTask(task);
         verify(taskRepoMock).createNewTask(task);
     }
 
     @Test
     public void updateTaskInfo_shouldNotModifyCreatedAtField() {
+        // Given
         Task updatedTask = new Task().setId(TASK_ID).setTitle("Test");
         Task taskToUpdate = new Task().setId(TASK_ID).setCreatedAt(LocalDateTime.now());
         Task expectedTask = new Task().setId(TASK_ID).setTitle(updatedTask.getTitle()).setCreatedAt(taskToUpdate.getCreatedAt());
         when(taskRepoMock.getTaskById(TASK_ID)).thenReturn(Optional.of(taskToUpdate));
 
+        // When
         testingService.updateTaskInfo(updatedTask);
 
+        // Then
         verify(taskValidatorMock).validateTask(updatedTask);
         verify(taskRepoMock).updateTaskInfo(expectedTask);
     }
 
     @Test
     public void deleteTaskById_shouldInvokeRepositoryMethod() {
+        // When
         testingService.deleteTaskById(TASK_ID);
 
+        // Then
         verify(taskRepoMock).deleteTaskById(TASK_ID);
     }
 
